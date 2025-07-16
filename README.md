@@ -127,11 +127,6 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-Created by [Your Name](https://github.com/your-username)
+Created by [Roman Zvir](https://github.com/roman-zvir)
 
-```
-
----
-
-If you want, I can help you customize it further with more project-specific details like how to run tests, links to live deployment, or screenshots. Would you like that?
 ```
