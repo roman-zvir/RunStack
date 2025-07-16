@@ -113,5 +113,3 @@ This project is licensed under the MIT License.
 ## Contact
 
 Created by [Roman Zvir](https://github.com/roman-zvir)
-
-```
