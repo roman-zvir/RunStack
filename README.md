@@ -66,15 +66,15 @@ Backend API will be available at: `http://localhost:5000`
 ### Build Docker Images Locally
 
 ```bash
-docker build -t your-dockerhub-username/backend ./backend
-docker build -t your-dockerhub-username/frontend ./frontend
+docker build -t backend ./backend
+docker build -t frontend ./frontend
 ```
 
 ### Run Docker Containers Locally
 
 ```bash
-docker run -p 5000:5000 your-dockerhub-username/backend
-docker run -p 3000:3000 your-dockerhub-username/frontend
+docker run -p 5000:5000 backend
+docker run -p 3000:3000 frontend
 ```
 
 ---
@@ -97,26 +97,11 @@ You can deploy the Docker images to any container orchestration platform like Ku
 
 ## Environment Variables
 
-* Backend `.env` example:
-
-```
-FLASK_ENV=development
-DATABASE_URL=your_database_url_here
-SECRET_KEY=your_secret_key_here
-```
-
 * Frontend `.env` example:
 
 ```
 REACT_APP_API_URL=http://localhost:5000/api
 ```
-
----
-
-## Contributing
-
-Contributions are welcome! Please open issues and submit pull requests.
-
 ---
 
 ## License
