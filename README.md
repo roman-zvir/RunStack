@@ -31,8 +31,8 @@ This repository contains a full-stack web application with a **React** frontend 
 ### Clone the repository
 
 ```bash
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
+git clone https://github.com/roman-zvir/react-python-playground.git
+cd react-python-playground
 ````
 
 ---
