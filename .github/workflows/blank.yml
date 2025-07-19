@@ -43,7 +43,7 @@ jobs:
       - name: Lint backend code
         run: |
           cd backend
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,__pycache__,.git
 
       - name: Run backend tests
         run: |
