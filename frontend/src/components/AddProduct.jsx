@@ -21,11 +21,7 @@ export function AddProduct() {
     }
     
     try {
-      console.log('Attempting to add product:', { title, price });
-      console.log('Price as number:', parseFloat(price));
-      
-      const response = await addProduct(title, price);
-      console.log('Product added successfully, response:', response);
+      await addProduct(title, price);
       
       // Clear form
       setTitle("");
@@ -34,13 +30,6 @@ export function AddProduct() {
       // Navigate back to product list
       navigate("/");
     } catch (error) {
-      console.error('Error adding product:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      
       let errorMessage = 'Failed to add product. ';
       if (error.response?.data?.message) {
         errorMessage += error.response.data.message;

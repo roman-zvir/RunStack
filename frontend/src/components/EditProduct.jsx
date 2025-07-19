@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   patchProduct,
@@ -17,16 +17,16 @@ export function EditProduct() {
     navigate("/");
   };
 
-  useEffect(() => {
-    getProductById();
-  }, []);
-
-  const getProductById = async () => {
+  const getProductById = useCallback(async () => {
     const response = await getProductFromApi(id);
     setTitle(response.name);
     setPrice(response.price);
     setIsLoading(false);
-  };
+  }, [id]);
+
+  useEffect(() => {
+    getProductById();
+  }, [getProductById]);
   if (isLoading) return <p>Loading...</p>;
   return (
     <div>

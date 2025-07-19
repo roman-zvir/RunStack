@@ -11,6 +11,7 @@ export function Footer() {
         right: "50px",
       }}
       src={logo}
+      alt="Company logo"
     />
   );
 }

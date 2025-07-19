@@ -30,7 +30,6 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    console.error('Request error:', error);
     return Promise.reject(error);
   }
 );
@@ -43,13 +42,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response) {
       // Server responded with error status
-      console.error('Response error:', error.response.status, error.response.data);
     } else if (error.request) {
       // Request was made but no response received
-      console.error('Network error:', error.request);
     } else {
       // Something else happened
-      console.error('Error:', error.message);
     }
     return Promise.reject(error);
   }
