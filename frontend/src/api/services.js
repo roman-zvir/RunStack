@@ -1,31 +1,30 @@
-import axios from "axios";
-
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+import api from './apiClient';
 
 export async function getProducts() {
-  const response = await axios.get(`${BASE_URL}/products`);
+  const response = await api.get('/products');
   return response.data;
 }
 
 export async function getProductById(id) {
-  const response = await axios.get(`${BASE_URL}/products/${id}`);
+  const response = await api.get(`/products/${id}`);
   return response.data;
 }
 
 export async function deleteProduct(id) {
-  await axios.delete(`${BASE_URL}/products/${id}`);
+  await api.delete(`/products/${id}`);
 }
 
 export async function addProduct(name, price) {
-  await axios.post(`${BASE_URL}/products`, {
+  const response = await api.post('/products', {
     name,
-    price,
+    price: parseFloat(price),
   });
+  return response.data;
 }
 
 export async function patchProduct(id, name, price) {
-  await axios.patch(`${BASE_URL}/products/${id}`, {
+  await api.patch(`/products/${id}`, {
     name,
-    price,
+    price: parseFloat(price),
   });
 }

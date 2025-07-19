@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init
+spec:
+  template:
+    metadata:
+      name: db-init
+    spec:
+      containers:
+        - name: db-init
+          image: backend:latest
+          imagePullPolicy: Never
+          command: ["python", "db.py", "-a"]
+          volumeMounts:
+            - name: backend-volume
+              mountPath: /app
+      volumes:
+        - name: backend-volume
+          hostPath:
+            path: ./backend
+            type: Directory
+      restartPolicy: Never

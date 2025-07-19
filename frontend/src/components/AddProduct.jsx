@@ -8,8 +8,50 @@ export function AddProduct() {
   const navigate = useNavigate();
   const saveProduct = async (e) => {
     e.preventDefault();
-    await addProduct(title, price);
-    navigate("/");
+    
+    // Validate inputs
+    if (!title.trim()) {
+      alert('Please enter a product title');
+      return;
+    }
+    
+    if (!price.trim() || isNaN(parseFloat(price))) {
+      alert('Please enter a valid price');
+      return;
+    }
+    
+    try {
+      console.log('Attempting to add product:', { title, price });
+      console.log('Price as number:', parseFloat(price));
+      
+      const response = await addProduct(title, price);
+      console.log('Product added successfully, response:', response);
+      
+      // Clear form
+      setTitle("");
+      setPrice("");
+      
+      // Navigate back to product list
+      navigate("/");
+    } catch (error) {
+      console.error('Error adding product:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status
+      });
+      
+      let errorMessage = 'Failed to add product. ';
+      if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please check the console for details.';
+      }
+      
+      alert(errorMessage);
+    }
   };
 
   return (

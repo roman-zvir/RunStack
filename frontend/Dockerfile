@@ -9,6 +9,10 @@ RUN npm install
 
 COPY . .
 
+# Build argument for the API URL
+ARG REACT_APP_BASE_URL=http://localhost:5000/api
+ENV REACT_APP_BASE_URL=$REACT_APP_BASE_URL
+
 RUN npm run build
 
 RUN npm install -g serve
