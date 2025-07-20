@@ -27,6 +27,13 @@ window.APP_CONFIG = {
       return 'http://localhost:5000/api';
     }
     
+    // GKE deployment - frontend runs on 34.66.141.78, backend on 104.155.134.17
+    if (currentHost === '34.66.141.78') {
+      const apiUrl = 'http://104.155.134.17:5000/api';
+      console.log('Using GKE backend URL:', apiUrl);
+      return apiUrl;
+    }
+    
     // For any other host, use port 31977
     const apiUrl = `http://${currentHost}:31977/api`;
     console.log('Using dynamic backend URL:', apiUrl);
