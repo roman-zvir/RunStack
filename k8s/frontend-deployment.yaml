@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: frontend:latest
-          imagePullPolicy: Never
+          image: gcr.io/intern-466414/frontend:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
             - name: REACT_APP_BASE_URL
-              value: "http://192.168.39.117:31977/api"
+              value: "http://backend:5000/api"

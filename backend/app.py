@@ -11,13 +11,8 @@ from db import (ProductModel,
                 delete_product)
 
 app = Flask(__name__)
-CORS(app, resources={
-    r"/api/*": {
-        "origins": "*",
-        "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-})
+# Enable CORS globally
+CORS(app)
 api = Api(app)
 
 

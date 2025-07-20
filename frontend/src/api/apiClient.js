@@ -1,14 +1,43 @@
 import axios from 'axios';
 
-// Create axios instance with better configuration
-// Fallback to external Minikube URL if the environment variable points to internal service
+// Create axios instance with runtime URL detection
 const getBaseURL = () => {
-  const envURL = process.env.REACT_APP_BASE_URL;
-  // If running in browser and URL points to internal service, use external URL
-  if (typeof window !== 'undefined' && envURL && envURL.includes('backend:5000')) {
-    return 'http://192.168.39.117:31977/api';
+  // Use dynamic runtime configuration for container (Minikube) deployments
+  if (typeof window !== 'undefined' && window.APP_CONFIG) {
+    return window.APP_CONFIG.getApiUrl();
   }
-  return envURL || 'http://192.168.39.117:31977/api';
+  // Allow override via environment variable
+  if (process.env.REACT_APP_API_URL) {
+    console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
+    return process.env.REACT_APP_API_URL;
+  }
+  
+  // Fallback: runtime detection without config
+  if (typeof window !== 'undefined') {
+    const currentHost = window.location.hostname;
+    const currentPort = window.location.port;
+    
+    // Check if we're in Minikube environment (accessing via Minikube IP)
+    if (currentHost.match(/^192\.168\.\d+\.\d+$/)) {
+      return `http://${currentHost}:31977/api`;
+    }
+    
+    // Check if we're accessing localhost but likely in Minikube context
+    // If port is 30593 (frontend NodePort), use Minikube backend
+    if ((currentHost === 'localhost' || currentHost === '127.0.0.1') && currentPort === '30593') {
+      return 'http://192.168.39.117:31977/api';
+    }
+    
+    // Standard localhost development
+    if (currentHost === 'localhost' || currentHost === '127.0.0.1') {
+      return 'http://localhost:5000/api';
+    }
+    
+    return `http://${currentHost}:31977/api`;
+  }
+  
+  // Server-side fallback
+  return 'http://backend:5000/api';
 };
 
 const api = axios.create({
@@ -19,6 +48,9 @@ const api = axios.create({
   },
   withCredentials: false,
 });
+
+// Log the actual base URL being used
+console.log('API Client initialized with baseURL:', getBaseURL());
 
 // Request interceptor
 api.interceptors.request.use(
