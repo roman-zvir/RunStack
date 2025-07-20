@@ -14,11 +14,11 @@ This repository contains a full-stack web application with a **React** frontend 
 
 ### Prerequisites
 
-- **Docker** and **Docker Compose**
-- **Node.js** and **npm** (for local frontend development)
-- **Python 3.8+** and **pip** (for local backend development)
-- **GitHub** account with repository access
-- **Docker Hub** account
+- Docker and Minikube (with kubectl)
+- Node.js and npm (for local frontend development)
+- Python 3.8+ and pip (for local backend development)
+- GitHub account with repository access
+- Docker Hub account
 
 ### Clone the Repository
 
@@ -53,27 +53,22 @@ flask run
 
 Access the backend API at `http://localhost:5000`.
 
-## Using Docker
+## Local Deployment with Minikube
 
-### Build Docker Images
-
-Build images for the frontend and backend:
+Ensure Minikube is installed and running, then use the provided script to build and deploy the application:
 
 ```bash
-docker build -t backend ./backend
-docker build -t frontend ./frontend
+minikube start
+chmod +x deploy.sh
+./deploy.sh
 ```
 
-### Run Docker Containers
-
-Run the containers to serve the application:
+Once deployed, retrieve the service URLs:
 
 ```bash
-docker run -p 5000:5000 backend
-docker run -p 3000:3000 frontend
+minikube service frontend --url
+minikube service backend --url
 ```
-
-Access the backend at `http://localhost:5000` and the frontend at `http://localhost:3000`.
 
 ## CI/CD Pipeline
 
@@ -89,10 +84,15 @@ Deploy the Docker images to a container orchestration platform like Kubernetes o
 
 ## Environment Variables
 
-Configure frontend environment variables in a `.env` file. Example:
+Configure frontend environment variables in a `.env` file. 
+you will find it in:
+```
+minikube service backend --url
+```
+Example:
 
 ```env
-REACT_APP_API_URL=http://localhost:5000/api
+REACT_APP_BASE_URL=http://192.168.39.117:31977/api
 ```
 
 ## License
