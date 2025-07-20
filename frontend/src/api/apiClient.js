@@ -8,6 +8,7 @@ const getBaseURL = () => {
   }
   // Allow override via environment variable
   if (process.env.REACT_APP_API_URL) {
+    // eslint-disable-next-line no-console
     console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
     return process.env.REACT_APP_API_URL;
   }
@@ -50,6 +51,7 @@ const api = axios.create({
 });
 
 // Log the actual base URL being used
+// eslint-disable-next-line no-console
 console.log('API Client initialized with baseURL:', getBaseURL());
 
 // Request interceptor
