@@ -80,7 +80,32 @@ On every push to the `main` branch, GitHub Actions:
 
 ## Deployment
 
-Deploy the Docker images to a container orchestration platform like Kubernetes or a cloud virtual machine.
+### Google Cloud Platform (GCP) - Recommended
+
+Your application is already deployed and running on GCP! 🚀
+
+**Live URLs:**
+- Frontend: http://34.66.141.78:3000
+- Backend API: http://104.155.134.17:5000/api/products
+
+For detailed GCP deployment instructions, see [GCP_DEPLOYMENT.md](./GCP_DEPLOYMENT.md).
+
+**Quick GCP Commands:**
+```bash
+# Check deployment status
+kubectl get pods
+kubectl get services
+
+# Scale your application
+kubectl scale deployment frontend --replicas=3
+
+# Update with new images
+./deploy.sh
+```
+
+### Other Options
+
+Deploy the Docker images to other container orchestration platforms like Kubernetes or cloud virtual machines.
 
 ## Environment Variables
 
