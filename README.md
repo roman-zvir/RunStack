@@ -12,18 +12,6 @@
 
 ---
 
-## 📋 Table of Contents
-
-- [About](#about)
-- [Tech Stack](#tech-stack)
-- [Features](#features)
-- [Quick Start](#quick-start)
-- [Development](#development)
-- [Deployment](#deployment)
-- [API Reference](#api-reference)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
 
 ## 🎯 About
 
