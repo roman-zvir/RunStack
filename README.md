@@ -13,6 +13,10 @@
 ---
 
 
+<img width="1932" height="969" alt="image" src="https://github.com/user-attachments/assets/6850b394-e7e5-463d-b6cd-6aefdbdf79a4" />
+
+
+
 ## 🎯 About
 
 React Flask Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment.
