@@ -12,14 +12,14 @@ help: ## Show this help message
 # Installation commands
 install: ## Install all dependencies (frontend & backend)
 	@echo "📦 Installing backend dependencies..."
-	cd backend && pip install -r requirements.txt
+	cd backend && ../.venv/bin/python -m pip install -r requirements.txt
 	@echo "📦 Installing frontend dependencies..."
 	cd frontend && npm install
 	@echo "✅ All dependencies installed!"
 
 install-backend: ## Install only backend dependencies
 	@echo "📦 Installing backend dependencies..."
-	cd backend && pip install -r requirements.txt
+	cd backend && ../.venv/bin/python -m pip install -r requirements.txt
 
 install-frontend: ## Install only frontend dependencies
 	@echo "📦 Installing frontend dependencies..."
@@ -28,7 +28,7 @@ install-frontend: ## Install only frontend dependencies
 # Development commands
 dev-backend: ## Start backend development server
 	@echo "🚀 Starting backend server..."
-	cd backend && python app.py --host 0.0.0.0 --port 5000
+	cd backend && ../.venv/bin/python app.py --host 0.0.0.0 --port 5000
 
 dev-frontend: ## Start frontend development server
 	@echo "🚀 Starting frontend server..."
@@ -58,7 +58,7 @@ test: test-backend test-frontend ## Run all tests
 
 test-backend: ## Run backend tests
 	@echo "🧪 Running backend tests..."
-	cd backend && python -m pytest --cov=. --cov-report=term-missing
+	cd backend && ../.venv/bin/python -m pytest --cov=. --cov-report=term-missing
 
 test-frontend: ## Run frontend tests
 	@echo "🧪 Running frontend tests..."
@@ -66,7 +66,7 @@ test-frontend: ## Run frontend tests
 
 test-watch-backend: ## Run backend tests in watch mode
 	@echo "🧪 Running backend tests in watch mode..."
-	cd backend && python -m pytest --cov=. -f
+	cd backend && ../.venv/bin/python -m pytest --cov=. -f
 
 test-watch-frontend: ## Run frontend tests in watch mode
 	@echo "🧪 Running frontend tests in watch mode..."
@@ -77,8 +77,8 @@ lint: lint-backend lint-frontend ## Lint all code
 
 lint-backend: ## Lint backend code
 	@echo "🔍 Linting backend..."
-	cd backend && flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-	cd backend && black --check --diff .
+	cd backend && ../.venv/bin/python -m flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+	cd backend && ../.venv/bin/python -m black --check --diff .
 
 lint-frontend: ## Lint frontend code
 	@echo "🔍 Linting frontend..."
@@ -86,15 +86,15 @@ lint-frontend: ## Lint frontend code
 
 format: ## Format all code
 	@echo "🎨 Formatting backend code..."
-	cd backend && black .
+	cd backend && ../.venv/bin/python -m black .
 	@echo "🎨 Formatting frontend code..."
 	cd frontend && npm run lint:fix
 
 # Security checks
 security: ## Run security checks
 	@echo "🔒 Running security checks..."
-	cd backend && bandit -r . || true
-	cd backend && safety check || true
+	cd backend && ../.venv/bin/python -m bandit -r . || true
+	cd backend && ../.venv/bin/python -m safety check || true
 
 # Database commands
 db-reset: ## Reset the database
