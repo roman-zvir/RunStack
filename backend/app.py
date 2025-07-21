@@ -1,5 +1,6 @@
 import argparse
 import re
+from datetime import datetime
 
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource, reqparse, inputs
@@ -14,6 +15,18 @@ app = Flask(__name__)
 # Enable CORS globally
 CORS(app)
 api = Api(app)
+
+
+# Health check endpoint
+@app.route('/health')
+def health_check():
+    """Health check endpoint for monitoring and load balancers."""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.utcnow().isoformat(),
+        'version': '1.0.0',
+        'service': 'react-python-playground-backend'
+    })
 
 
 # Define the resources

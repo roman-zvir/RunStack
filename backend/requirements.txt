@@ -11,3 +11,11 @@ peewee==3.16.1
 pytz==2023.3
 six==1.16.0
 Werkzeug==2.2.3
+
+# Development and Testing Dependencies
+pytest==7.4.0
+pytest-cov==4.1.0
+flake8==6.0.0
+black==23.7.0
+bandit==1.7.5
+safety==2.3.4
