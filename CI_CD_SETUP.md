@@ -151,22 +151,29 @@ Test coverage is automatically:
 
 ### **Common Issues**
 
-1. **`npm ci` fails with missing packages**
+1. **`npm ci` fails with "Dependencies lock file is not found"**
+   ```bash
+   # This indicates a cache path issue in CI/CD
+   # Fixed by adding cache-dependency-path: './frontend/package-lock.json'
+   # in the GitHub Actions workflow
+   ```
+
+2. **`npm ci` fails with missing packages**
    ```bash
    cd frontend && npm install  # Regenerate package-lock.json
    ```
 
-2. **Python tests fail**
+3. **Python tests fail**
    ```bash
    cd backend && python -m pytest -v  # Detailed test output
    ```
 
-3. **Docker build fails**
+4. **Docker build fails**
    ```bash
    make docker-build  # Local build test
    ```
 
-4. **Linting errors**
+5. **Linting errors**
    ```bash
    make format  # Auto-fix formatting issues
    ```
