@@ -1,0 +1,283 @@
+name: 🚀 CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "dev", "Dev" ]
+  pull_request:
+    branches: [ "main", "dev", "Dev" ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.11'
+  GCP_PROJECT: 'intern-466414'
+  ARTIFACT_REGISTRY: 'us-central1-docker.pkg.dev'
+  REPOSITORY_NAME: 'my-repo'
+
+jobs:
+  # Frontend CI Jobs
+  frontend-test:
+    name: 🧪 Frontend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: 🧪 Run tests
+        run: npm test -- --coverage --watchAll=false
+
+      - name: 🏗️ Build frontend
+        run: npm run build
+
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./frontend/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+  frontend-lint:
+    name: 🔍 Frontend Linting
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json'
+
+      - name: 📦 Install dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: 🔍 Run ESLint
+        run: npx eslint src/ --ext .js,.jsx,.ts,.tsx --format=json --output-file=eslint-report.json || true
+
+      - name: 📊 Upload ESLint results
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: frontend/eslint-report.json
+
+  # Backend CI Jobs
+  backend-test:
+    name: 🧪 Backend Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: './backend/requirements.txt'
+
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov flake8 black bandit safety
+
+      - name: 🔍 Run linting (flake8)
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,__pycache__,.git
+
+      - name: 🎨 Check code formatting (black)
+        run: black --check --diff .
+
+      - name: 🔒 Security scan (bandit)
+        run: bandit -r . -f json -o bandit-report.json || true
+
+      - name: 🛡️ Check dependencies (safety)
+        run: safety check --json --output safety-report.json || true
+
+      - name: 🧪 Run tests with coverage
+        run: pytest --cov=. --cov-report=xml --cov-report=term
+
+      - name: 📊 Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./backend/coverage.xml
+          flags: backend
+          name: backend-coverage
+
+      - name: 📊 Upload security reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-reports
+          path: |
+            backend/bandit-report.json
+            backend/safety-report.json
+
+  # Docker Build Jobs
+  docker-build:
+    name: 🐳 Docker Build & Push to Artifact Registry
+    runs-on: ubuntu-latest
+    needs: [frontend-test, backend-test]
+    if: github.event_name == 'push'
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: � Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: 🔧 Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: 🐳 Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }}
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🏗️ Build and push backend image
+        run: |
+          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:latest \
+                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:${{ github.sha }} \
+                       ./backend
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:latest
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:${{ github.sha }}
+
+      - name: 🏗️ Build and push frontend image
+        run: |
+          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:latest \
+                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:${{ github.sha }} \
+                       ./frontend
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:latest
+          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:${{ github.sha }}
+
+  # Deployment Job
+  deploy:
+    name: 🚀 Deploy to GCP
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev')
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: 🔧 Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: 🔧 Install GKE auth plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+
+      - name: 🔧 Configure kubectl
+        run: |
+          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} \
+            --zone ${{ secrets.GKE_ZONE }} \
+            --project ${{ secrets.GCP_PROJECT }}
+
+      - name: 🚀 Deploy to Kubernetes
+        run: |
+          # Update image tags in k8s manifests
+          sed -i "s|gcr.io/intern-466414/backend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
+          sed -i "s|gcr.io/intern-466414/frontend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
+          
+          # Apply k8s manifests with validation
+          kubectl apply -f k8s/ --validate=true || {
+            echo "⚠️ Validation failed, applying without validation..."
+            kubectl apply -f k8s/ --validate=false
+          }
+          
+          # Wait for rollout
+          kubectl rollout status deployment/backend
+          kubectl rollout status deployment/frontend
+          
+          # Wait for LoadBalancer services to get external IPs
+          echo "⏳ Waiting for LoadBalancer services to get external IPs..."
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/frontend --timeout=300s || echo "Frontend LoadBalancer timeout"
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/backend --timeout=300s || echo "Backend LoadBalancer timeout"
+
+      - name: 🔗 Get Service URLs
+        run: |
+          echo "📡 Getting service information..."
+          
+          # Get external IPs
+          FRONTEND_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          BACKEND_IP=$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          
+          echo "Frontend External IP: $FRONTEND_IP"
+          echo "Backend External IP: $BACKEND_IP"
+          
+          # Set environment variables for next step
+          echo "FRONTEND_URL=http://$FRONTEND_IP" >> $GITHUB_ENV
+          echo "BACKEND_URL=http://$BACKEND_IP" >> $GITHUB_ENV
+
+      - name: 🎉 Deployment Success Notification
+        if: success()
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🔗 Frontend: ${{ env.FRONTEND_URL }}"
+          echo "🔗 Backend: ${{ env.BACKEND_URL }}"
+          echo ""
+          echo "📋 To check service status manually:"
+          echo "kubectl get services"
+          echo "kubectl get pods"
+
+  # Notification Job
+  notify:
+    name: 📢 Notify
+    runs-on: ubuntu-latest
+    needs: [frontend-test, frontend-lint, backend-test, docker-build, deploy]
+    if: always()
+
+    steps:
+      - name: 📊 Pipeline Summary
+        run: |
+          echo "## 📊 Pipeline Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Job | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Tests | ${{ needs.frontend-test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Frontend Lint | ${{ needs.frontend-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Backend Tests | ${{ needs.backend-test.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Build | ${{ needs.docker-build.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY

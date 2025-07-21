@@ -16,8 +16,9 @@ spec:
         - name: gcr-json-key
       containers:
         - name: backend
-          image: gcr.io/intern-466414/backend:latest
+          image: us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
           imagePullPolicy: Always
+          command: ["python", "app.py", "--host=0.0.0.0", "--port=5000"]
           ports:
             - containerPort: 5000
           env:
