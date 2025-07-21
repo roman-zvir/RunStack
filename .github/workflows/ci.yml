@@ -231,13 +231,37 @@ jobs:
           # Wait for rollout
           kubectl rollout status deployment/backend
           kubectl rollout status deployment/frontend
+          
+          # Wait for LoadBalancer services to get external IPs
+          echo "⏳ Waiting for LoadBalancer services to get external IPs..."
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/frontend --timeout=300s || echo "Frontend LoadBalancer timeout"
+          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/backend --timeout=300s || echo "Backend LoadBalancer timeout"
+
+      - name: 🔗 Get Service URLs
+        run: |
+          echo "📡 Getting service information..."
+          
+          # Get external IPs
+          FRONTEND_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          BACKEND_IP=$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          
+          echo "Frontend External IP: $FRONTEND_IP"
+          echo "Backend External IP: $BACKEND_IP"
+          
+          # Set environment variables for next step
+          echo "FRONTEND_URL=http://$FRONTEND_IP" >> $GITHUB_ENV
+          echo "BACKEND_URL=http://$BACKEND_IP" >> $GITHUB_ENV
 
       - name: 🎉 Deployment Success Notification
         if: success()
         run: |
           echo "✅ Deployment successful!"
-          echo "🔗 Frontend: http://34.66.141.78:3000"
-          echo "🔗 Backend: http://104.155.134.17:5000"
+          echo "🔗 Frontend: ${{ env.FRONTEND_URL }}"
+          echo "🔗 Backend: ${{ env.BACKEND_URL }}"
+          echo ""
+          echo "📋 To check service status manually:"
+          echo "kubectl get services"
+          echo "kubectl get pods"
 
   # Notification Job
   notify:

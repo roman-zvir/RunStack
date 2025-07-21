@@ -34,6 +34,11 @@ const getBaseURL = () => {
       return 'http://localhost:5000/api';
     }
     
+    // GKE deployment - check if we're accessing via external IP
+    if (currentHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
+      return 'http://104.155.134.17/api';
+    }
+    
     return `http://${currentHost}:31977/api`;
   }
   
