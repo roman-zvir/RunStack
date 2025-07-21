@@ -229,8 +229,8 @@ jobs:
           }
           
           # Wait for rollout
-          kubectl rollout status deployment/backend-deployment
-          kubectl rollout status deployment/frontend-deployment
+          kubectl rollout status deployment/backend
+          kubectl rollout status deployment/frontend
 
       - name: 🎉 Deployment Success Notification
         if: success()
