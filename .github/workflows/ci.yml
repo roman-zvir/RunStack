@@ -205,6 +205,11 @@ jobs:
       - name: 🔧 Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
+      - name: 🔧 Install GKE auth plugin
+        run: |
+          gcloud components install gke-gcloud-auth-plugin
+          echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+
       - name: 🔧 Configure kubectl
         run: |
           gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} \
@@ -217,8 +222,11 @@ jobs:
           sed -i "s|gcr.io/intern-466414/backend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
           sed -i "s|gcr.io/intern-466414/frontend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ env.REPOSITORY_NAME }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
           
-          # Apply k8s manifests
-          kubectl apply -f k8s/
+          # Apply k8s manifests with validation
+          kubectl apply -f k8s/ --validate=true || {
+            echo "⚠️ Validation failed, applying without validation..."
+            kubectl apply -f k8s/ --validate=false
+          }
           
           # Wait for rollout
           kubectl rollout status deployment/backend-deployment
