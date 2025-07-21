@@ -2,7 +2,7 @@ from peewee import *
 import argparse
 
 # Define the database and the model
-db = SqliteDatabase('products.db')
+db = SqliteDatabase("products.db")
 
 
 class ProductModel(Model):
@@ -12,15 +12,13 @@ class ProductModel(Model):
 
     class Meta:
         database = db
-        db_table = 'product'
+        db_table = "product"
 
     def __str__(self):
         return f"({self.id}, {self.name}, {self.price})"
 
     def to_dict(self):
-        return {"id": self.id,
-                "name": self.name,
-                "price": self.price}
+        return {"id": self.id, "name": self.name, "price": self.price}
 
 
 # Create a new product
@@ -79,9 +77,15 @@ def _print_all_data():
 if __name__ == "__main__":
     # Create the table
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--delete_all_data', help='deletes all data', action='store_true')
-    parser.add_argument('-a', '--add_default_data', help='add default data', action='store_true')
-    parser.add_argument('-p', '--print_all_data', help='print all rows', action='store_true')
+    parser.add_argument(
+        "-d", "--delete_all_data", help="deletes all data", action="store_true"
+    )
+    parser.add_argument(
+        "-a", "--add_default_data", help="add default data", action="store_true"
+    )
+    parser.add_argument(
+        "-p", "--print_all_data", help="print all rows", action="store_true"
+    )
     args = parser.parse_args()
 
     db.create_tables([ProductModel])
