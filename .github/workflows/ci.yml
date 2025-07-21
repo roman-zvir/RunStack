@@ -112,7 +112,7 @@ jobs:
           pip install pytest pytest-cov flake8 black bandit safety
 
       - name: 🔍 Run linting (flake8)
-        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=venv,__pycache__,.git
 
       - name: 🎨 Check code formatting (black)
         run: black --check --diff .
