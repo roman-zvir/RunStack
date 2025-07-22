@@ -166,8 +166,8 @@ Your application is **live and running** on Google Cloud Platform! 🎉
 
 | Service | URL | Status |
 |---------|-----|--------|
-| 🌐 **Frontend** | [http://34.66.141.78:3000](http://34.66.141.78:3000) | ✅ Live |
-| 🔌 **Backend API** | [http://104.155.134.17:5000/api/products](http://104.155.134.17:5000/api/products) | ✅ Live |
+| 🌐 **Frontend** | [http://34.172.36.134](http://34.172.36.134) | ✅ Live |
+| 🔌 **Backend API** | [http://104.155.134.17/api/products](http://104.155.134.17/api/products) | ✅ Live |
 
 ### Deployment Options
 
