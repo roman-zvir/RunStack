@@ -27,16 +27,16 @@ window.APP_CONFIG = {
       return 'http://localhost:5000/api';
     }
     
-    // GKE deployment - frontend runs on 34.172.36.134, backend on 104.155.134.17
-    if (currentHost === '34.172.36.134') {
-      const apiUrl = 'http://104.155.134.17/api';
+    // GKE deployment - frontend runs on 34.71.104.133, backend on 34.10.145.23 (static IPs)
+    if (currentHost === '34.71.104.133') {
+      const apiUrl = 'http://34.10.145.23/api';
       console.log('Using GKE backend URL:', apiUrl);
       return apiUrl;
     }
     
     // Fallback for GKE: if we're accessing via external IP, use the backend LoadBalancer IP
     if (currentHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-      const apiUrl = 'http://104.155.134.17/api';
+      const apiUrl = 'http://34.10.145.23/api';
       console.log('Using GKE backend URL for external IP access:', apiUrl);
       return apiUrl;
     }

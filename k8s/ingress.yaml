@@ -1,0 +1,58 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "gce"
+    # Use HTTPS redirect
+    kubernetes.io/ingress.allow-http: "true"
+    # Reserve a static IP for the ingress (optional)
+    kubernetes.io/ingress.global-static-ip-name: "app-static-ip"
+    # Enable SSL certificates (you'll need to set this up separately)
+    # kubernetes.io/ingress.global-static-ip-name: "your-reserved-ip-name"
+spec:
+  rules:
+    # Replace 'your-domain.com' with your actual domain
+    - host: your-domain.com
+      http:
+        paths:
+          # Frontend routes
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+          # Backend API routes
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+    # Optionally add www subdomain
+    - host: www.your-domain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+  # For HTTPS (you'll need to set up SSL certificates)
+  # tls:
+  #   - hosts:
+  #       - your-domain.com
+  #       - www.your-domain.com
+  #     secretName: app-tls-secret
