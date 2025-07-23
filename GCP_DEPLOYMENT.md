@@ -5,8 +5,8 @@
 Your React + Flask application has been successfully deployed to Google Cloud Platform!
 
 ### Live URLs
-- **Frontend**: http://34.71.104.133 (Static IP)
-- **Backend API**: http://34.10.145.23/api/products (Static IP)
+- **Frontend**: http://34.29.235.29 (Static IP)
+- **Backend API**: http://34.16.74.187/api/products (Static IP)
 
 ✅ **Status**: Both frontend and backend are connected and working correctly!
 
@@ -65,7 +65,7 @@ kubectl patch service frontend -p '{"spec":{"type":"LoadBalancer"}}'
 kubectl patch service backend -p '{"spec":{"type":"LoadBalancer"}}'
 
 # Update frontend environment
-kubectl set env deployment/frontend REACT_APP_BASE_URL=http://104.155.134.17:5000/api
+kubectl set env deployment/frontend REACT_APP_BASE_URL=http://34.16.74.187/api
 ```
 
 ## Management Commands
@@ -102,8 +102,8 @@ kubectl set image deployment/backend backend=gcr.io/intern-466414/backend:v2
 ## Static IP Management
 
 ### Reserved Static IPs
-- **Frontend IP**: 34.71.104.133 (frontend-static-ip)
-- **Backend IP**: 34.10.145.23 (backend-static-ip)
+- **Frontend IP**: 34.29.235.29 (frontend-static-ip)
+- **Backend IP**: 34.16.74.187 (backend-static-ip)
 
 ### Static IP Commands
 ```bash

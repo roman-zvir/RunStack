@@ -2,12 +2,12 @@
   <h1>🚀 React Flask Playground</h1>
   <p>A modern full-stack web application built with React and Flask</p>
 
-  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](http://34.66.141.78:3000)
+  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](http://34.29.235.29)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://hub.docker.com/u/romanzvir)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/roman-zvir/react-python-playground/actions)
 
-  [Live Demo](http://34.66.141.78:3000) • [API Docs](http://104.155.134.17:5000/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
+  [Live Demo](http://34.29.235.29) • [API Docs](http://34.16.74.187/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
 </div>
 
 ---
@@ -166,8 +166,8 @@ Your application is **live and running** on Google Cloud Platform! 🎉
 
 | Service | URL | Status |
 |---------|-----|--------|
-| 🌐 **Frontend** | [http://34.172.36.134](http://34.172.36.134) | ✅ Live |
-| 🔌 **Backend API** | [http://104.155.134.17/api/products](http://104.155.134.17/api/products) | ✅ Live |
+| 🌐 **Frontend** | [http://34.29.235.29](http://34.29.235.29) | ✅ Live |
+| 🔌 **Backend API** | [http://34.16.74.187/api/products](http://34.16.74.187/api/products) | ✅ Live |
 
 ### Deployment Options
 
@@ -213,7 +213,7 @@ Deploy the Docker images to:
 ## 📚 API Reference
 
 ### Base URL
-- **Production**: `http://104.155.134.17:5000/api`
+- **Production**: `http://34.16.74.187/api`
 - **Local**: `http://localhost:5000/api`
 
 ### Endpoints
@@ -230,10 +230,10 @@ Deploy the Docker images to:
 
 ```bash
 # Get all products
-curl -X GET "http://104.155.134.17:5000/api/products"
+curl -X GET "http://34.16.74.187/api/products"
 
 # Create a product
-curl -X POST "http://104.155.134.17:5000/api/products" \
+curl -X POST "http://34.16.74.187/api/products" \
   -H "Content-Type: application/json" \
   -d '{"name": "New Product", "price": 29.99}'
 ```

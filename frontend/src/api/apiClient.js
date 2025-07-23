@@ -36,7 +36,7 @@ const getBaseURL = () => {
     
     // GKE deployment - check if we're accessing via external IP
     if (currentHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-      return 'http://34.10.145.23/api';
+      return 'http://34.16.74.187/api';
     }
     
     return `http://${currentHost}:31977/api`;
