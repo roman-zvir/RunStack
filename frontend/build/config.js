@@ -41,6 +41,18 @@ window.APP_CONFIG = {
       return apiUrl;
     }
     
+    // For domain-based deployment (like roman-zvir-pet-project.pp.ua)
+    // Use HTTPS if frontend is served over HTTPS, otherwise HTTP
+    const protocol = window.location.protocol; // 'https:' or 'http:'
+    
+    // Check if it's a domain-based deployment
+    if (currentHost.includes('.pp.ua') || currentHost.includes('.com') || currentHost.includes('.net') || currentHost.includes('.org')) {
+      // Use ingress routing - same domain, same protocol, /api path
+      const apiUrl = `${protocol}//${currentHost}/api`;
+      console.log('Using domain-based ingress backend URL:', apiUrl);
+      return apiUrl;
+    }
+    
     // For any other host, use port 31977 (Minikube/local development)
     const apiUrl = `http://${currentHost}:31977/api`;
     console.log('Using dynamic backend URL:', apiUrl);

@@ -57,9 +57,9 @@ fi
 
 print_success "Authenticated with gcloud"
 
-# Configure Docker for GCR if not already configured
-print_status "Configuring Docker for GCR..."
-gcloud auth configure-docker --quiet
+# Configure Docker for Artifact Registry if not already configured
+print_status "Configuring Docker for Artifact Registry..."
+gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
 # Check if cluster exists and is accessible
 print_status "Checking GKE cluster connectivity..."
@@ -70,21 +70,21 @@ fi
 
 print_success "Connected to GKE cluster"
 
-# Build and push images to GCR
+# Build and push images to Artifact Registry
 print_status "Building and pushing backend image..."
-docker build -t gcr.io/intern-466414/backend:latest ./backend
-docker push gcr.io/intern-466414/backend:latest
+docker build -t us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest ./backend
+docker push us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
 print_success "Backend image built and pushed"
 
 print_status "Building and pushing frontend image..."
-docker build -t gcr.io/intern-466414/frontend:latest ./frontend
-docker push gcr.io/intern-466414/frontend:latest
+docker build -t us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest ./frontend
+docker push us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 print_success "Frontend image built and pushed"
 
 # Deploy to GKE
 print_status "Updating deployments..."
-kubectl set image deployment/backend backend=gcr.io/intern-466414/backend:latest
-kubectl set image deployment/frontend frontend=gcr.io/intern-466414/frontend:latest
+kubectl set image deployment/backend backend=us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
+kubectl set image deployment/frontend frontend=us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 
 print_status "Waiting for rollout to complete..."
 kubectl rollout status deployment/backend --timeout=300s

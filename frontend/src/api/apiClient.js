@@ -17,6 +17,7 @@ const getBaseURL = () => {
   if (typeof window !== 'undefined') {
     const currentHost = window.location.hostname;
     const currentPort = window.location.port;
+    const protocol = window.location.protocol; // 'https:' or 'http:'
     
     // Check if we're in Minikube environment (accessing via Minikube IP)
     if (currentHost.match(/^192\.168\.\d+\.\d+$/)) {
@@ -37,6 +38,12 @@ const getBaseURL = () => {
     // GKE deployment - check if we're accessing via external IP
     if (currentHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
       return 'http://34.16.74.187/api';
+    }
+    
+    // Domain-based deployment (like roman-zvir-pet-project.pp.ua)
+    // Use same protocol as frontend and ingress routing
+    if (currentHost.includes('.pp.ua') || currentHost.includes('.com') || currentHost.includes('.net') || currentHost.includes('.org')) {
+      return `${protocol}//${currentHost}/api`;
     }
     
     return `http://${currentHost}:31977/api`;
