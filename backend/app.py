@@ -111,7 +111,7 @@ if __name__ == "__main__":
     parser.add_argument("--port", help="Port to bind to", default=5000, type=int)
     args = parser.parse_args()
     print(args.host, args.port)
-    
+
     # Use production settings if FLASK_ENV is not development
-    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    debug_mode = os.environ.get("FLASK_ENV") == "development"
     app.run(host=args.host, port=args.port, debug=debug_mode)
