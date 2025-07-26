@@ -2,38 +2,42 @@ import api from './apiClient';
 
 export async function getProducts() {
   try {
-    console.log('Making API request to /products...');
     const response = await api.get('/products');
-    console.log('Raw API response:', response);
-    console.log('Response data:', response.data);
-    console.log('Response data type:', typeof response.data);
-    console.log('Response data is array:', Array.isArray(response.data));
-    
     const data = response.data;
     
     // Ensure we return an array
     if (Array.isArray(data)) {
-      console.log('Returning array with', data.length, 'items');
       return data;
     } else if (data && typeof data === 'object') {
       // Handle case where API might wrap the array in an object
       if (data.products && Array.isArray(data.products)) {
-        console.log('Found products array in response object');
         return data.products;
       } else if (data.data && Array.isArray(data.data)) {
-        console.log('Found data array in response object');
         return data.data;
       } else {
-        console.error('API response is an object but does not contain an array:', data);
+        // Only log errors in development
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line no-console
+          console.error('API response is an object but does not contain an array:', data);
+        }
         return [];
       }
     } else {
-      console.error('API response is not an array or object:', data);
+      // Only log errors in development
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('API response is not an array or object:', data);
+      }
       return [];
     }
   } catch (error) {
-    console.error('Error fetching products:', error);
-    console.error('Error details:', error.response?.data || error.message);
+    // Only log errors in development
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching products:', error);
+      // eslint-disable-next-line no-console
+      console.error('Error details:', error.response?.data || error.message);
+    }
     return [];
   }
 }

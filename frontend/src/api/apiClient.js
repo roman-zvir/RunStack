@@ -8,8 +8,11 @@ const getBaseURL = () => {
   }
   // Allow override via environment variable
   if (process.env.REACT_APP_API_URL) {
-    // eslint-disable-next-line no-console
-    console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
+    }
     return process.env.REACT_APP_API_URL;
   }
   
@@ -62,9 +65,11 @@ const api = axios.create({
   withCredentials: false,
 });
 
-// Log the actual base URL being used
-// eslint-disable-next-line no-console
-console.log('API Client initialized with baseURL:', getBaseURL());
+// Log the actual base URL being used (only in development)
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line no-console
+  console.log('API Client initialized with baseURL:', getBaseURL());
+}
 
 // Request interceptor
 api.interceptors.request.use(

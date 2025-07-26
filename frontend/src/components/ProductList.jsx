@@ -15,7 +15,6 @@ export function ProductList() {
   const getProducts = async () => {
     try {
       const response = await getProductsFromApi();
-      console.log('Products response received:', response, 'Type:', typeof response, 'IsArray:', Array.isArray(response));
       
       let products = response;
       
@@ -36,7 +35,11 @@ export function ProductList() {
           if (values.every(item => item && typeof item === 'object' && item.id)) {
             products = values;
           } else {
-            console.error('Unknown response format:', response);
+            // Only log errors in development
+            if (process.env.NODE_ENV === 'development') {
+              // eslint-disable-next-line no-console
+              console.error('Unknown response format:', response);
+            }
             products = [];
           }
         }
@@ -44,14 +47,21 @@ export function ProductList() {
       
       // Final validation: ensure products is an array
       if (Array.isArray(products)) {
-        console.log('Setting products array with', products.length, 'items');
         setProducts(products);
       } else {
-        console.error('Could not extract array from API response:', response);
+        // Only log errors in development
+        if (process.env.NODE_ENV === 'development') {
+          // eslint-disable-next-line no-console
+          console.error('Could not extract array from API response:', response);
+        }
         setProducts([]);
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      // Only log errors in development
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.error('Error fetching products:', error);
+      }
       setProducts([]);
     }
   };
@@ -80,7 +90,11 @@ export function ProductList() {
             products.map((product, index) => {
               // Add safety check for product object
               if (!product || typeof product !== 'object') {
-                console.warn('Invalid product item at index', index, ':', product);
+                // Only log warnings in development
+                if (process.env.NODE_ENV === 'development') {
+                  // eslint-disable-next-line no-console
+                  console.warn('Invalid product item at index', index, ':', product);
+                }
                 return null;
               }
               
