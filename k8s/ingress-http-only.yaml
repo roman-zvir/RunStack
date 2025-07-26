@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress-http
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "app-static-ip"
+    kubernetes.io/ingress.allow-http: "true"
+spec:
+  ingressClassName: "gce"
+  rules:
+    - host: roman-zvir-pet-project.pp.ua
+      http:
+        paths:
+          # Backend API routes (must come first - more specific)
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          # Frontend routes (catch-all)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+    - host: www.roman-zvir-pet-project.pp.ua
+      http:
+        paths:
+          # Backend API routes (must come first - more specific)
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          # Frontend routes (catch-all)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80

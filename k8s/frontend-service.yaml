@@ -2,11 +2,16 @@ apiVersion: v1
 kind: Service
 metadata:
   name: frontend
+  annotations:
+    # Reserve and use a static IP for this service
+    cloud.google.com/load-balancer-type: "External"
 spec:
   selector:
     app: frontend
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 80
   type: LoadBalancer
+  # Uncomment and specify your static IP address here
+  # loadBalancerIP: "YOUR_STATIC_IP_ADDRESS"

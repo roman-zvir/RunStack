@@ -8,8 +8,11 @@ const getBaseURL = () => {
   }
   // Allow override via environment variable
   if (process.env.REACT_APP_API_URL) {
-    // eslint-disable-next-line no-console
-    console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
+    // Only log in development
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('Using API URL from env:', process.env.REACT_APP_API_URL);
+    }
     return process.env.REACT_APP_API_URL;
   }
   
@@ -17,6 +20,7 @@ const getBaseURL = () => {
   if (typeof window !== 'undefined') {
     const currentHost = window.location.hostname;
     const currentPort = window.location.port;
+    const protocol = window.location.protocol; // 'https:' or 'http:'
     
     // Check if we're in Minikube environment (accessing via Minikube IP)
     if (currentHost.match(/^192\.168\.\d+\.\d+$/)) {
@@ -36,7 +40,13 @@ const getBaseURL = () => {
     
     // GKE deployment - check if we're accessing via external IP
     if (currentHost.match(/^\d+\.\d+\.\d+\.\d+$/)) {
-      return 'http://104.155.134.17/api';
+      return 'http://34.16.74.187/api';
+    }
+    
+    // Domain-based deployment (like roman-zvir-pet-project.pp.ua)
+    // Use same protocol as frontend and ingress routing
+    if (currentHost.includes('.pp.ua') || currentHost.includes('.com') || currentHost.includes('.net') || currentHost.includes('.org')) {
+      return `${protocol}//${currentHost}/api`;
     }
     
     return `http://${currentHost}:31977/api`;
@@ -55,9 +65,11 @@ const api = axios.create({
   withCredentials: false,
 });
 
-// Log the actual base URL being used
-// eslint-disable-next-line no-console
-console.log('API Client initialized with baseURL:', getBaseURL());
+// Log the actual base URL being used (only in development)
+if (process.env.NODE_ENV === 'development') {
+  // eslint-disable-next-line no-console
+  console.log('API Client initialized with baseURL:', getBaseURL());
+}
 
 // Request interceptor
 api.interceptors.request.use(

@@ -1,13 +1,13 @@
 <div align="center">
-  <h1>🚀 React Flask Playground</h1>
-  <p>A modern full-stack web application built with React and Flask</p>
+  <h1>🚀 React Python Playground</h1>
+  <p>A modern full-stack web application built with React and Flask - Roman Zvir's Pet Project</p>
 
-  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](http://34.66.141.78:3000)
+  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://roman-zvir-pet-project.pp.ua/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://hub.docker.com/u/romanzvir)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/roman-zvir/react-python-playground/actions)
 
-  [Live Demo](http://34.66.141.78:3000) • [API Docs](http://104.155.134.17:5000/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
+  [Live Demo](https://roman-zvir-pet-project.pp.ua/) • [API Docs](https://roman-zvir-pet-project.pp.ua/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
 </div>
 
 ---
@@ -19,16 +19,18 @@
 
 ## 🎯 About
 
-React Flask Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment.
+React Python Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain.
 
 ### ✨ Key Highlights
 
 - **🔄 Full-Stack**: React frontend with Flask REST API backend
 - **🐳 Containerized**: Docker-ready for any environment
 - **☁️ Cloud Native**: Deployed on Google Cloud Platform with Kubernetes
+- **🌐 Custom Domain**: Available at https://roman-zvir-pet-project.pp.ua/
+- **🔒 SSL Secured**: HTTPS enabled with SSL certificate
 - **🚀 CI/CD**: Automated builds and deployments with GitHub Actions
 - **📱 Responsive**: Mobile-first design with Bulma CSS framework
-- **🔒 Production Ready**: Includes security, logging, and monitoring
+- **� Production Ready**: Includes security, logging, and monitoring
 
 ## 🛠 Tech Stack
 
@@ -162,23 +164,29 @@ python test_app.py # Run backend tests
 
 ### Live Application
 
-Your application is **live and running** on Google Cloud Platform! 🎉
+Your application is **live and running** with a custom domain! 🎉
 
 | Service | URL | Status |
 |---------|-----|--------|
-| 🌐 **Frontend** | [http://34.172.36.134](http://34.172.36.134) | ✅ Live |
-| 🔌 **Backend API** | [http://104.155.134.17/api/products](http://104.155.134.17/api/products) | ✅ Live |
+| 🌐 **Frontend** | [https://roman-zvir-pet-project.pp.ua/](https://roman-zvir-pet-project.pp.ua/) | ✅ Live |
+| 🔌 **Backend API** | [https://roman-zvir-pet-project.pp.ua/api/products](https://roman-zvir-pet-project.pp.ua/api/products) | ✅ Live |
 
 ### Deployment Options
 
 #### 🔵 Google Cloud Platform (Current)
 
-The application is deployed using Google Kubernetes Engine (GKE). See [GCP_DEPLOYMENT.md](./GCP_DEPLOYMENT.md) for detailed instructions.
+The application is deployed using Google Kubernetes Engine (GKE) with a custom domain configuration. The setup includes:
+
+- **🌐 Custom Domain**: `roman-zvir-pet-project.pp.ua`
+- **🔒 SSL Certificate**: Automatic HTTPS with Let's Encrypt
+- **🚀 Load Balancer**: Google Cloud Load Balancer for high availability
+- **📊 Monitoring**: Cloud monitoring and logging enabled
 
 ```bash
 # Check deployment status
 kubectl get pods
 kubectl get services
+kubectl get ingress
 
 # Scale your application
 kubectl scale deployment frontend --replicas=3
@@ -186,6 +194,8 @@ kubectl scale deployment frontend --replicas=3
 # Update deployment
 ./deploy.sh
 ```
+
+For detailed deployment instructions, see the Kubernetes manifests in the `k8s/` directory.
 
 #### 🐳 Local with Minikube
 
@@ -213,7 +223,7 @@ Deploy the Docker images to:
 ## 📚 API Reference
 
 ### Base URL
-- **Production**: `http://104.155.134.17:5000/api`
+- **Production**: `https://roman-zvir-pet-project.pp.ua/api`
 - **Local**: `http://localhost:5000/api`
 
 ### Endpoints
@@ -230,10 +240,10 @@ Deploy the Docker images to:
 
 ```bash
 # Get all products
-curl -X GET "http://104.155.134.17:5000/api/products"
+curl -X GET "https://roman-zvir-pet-project.pp.ua/api/products"
 
 # Create a product
-curl -X POST "http://104.155.134.17:5000/api/products" \
+curl -X POST "https://roman-zvir-pet-project.pp.ua/api/products" \
   -H "Content-Type: application/json" \
   -d '{"name": "New Product", "price": 29.99}'
 ```
@@ -245,11 +255,14 @@ curl -X POST "http://104.155.134.17:5000/api/products" \
 Create a `.env` file in the `frontend` directory:
 
 ```env
-# API Base URL (get from minikube service backend --url)
-REACT_APP_BASE_URL=http://192.168.39.117:31977/api
+# API Base URL - Production
+REACT_APP_BASE_URL=https://roman-zvir-pet-project.pp.ua/api
+
+# API Base URL - Local development
+# REACT_APP_BASE_URL=http://localhost:5000/api
 
 # Optional: Enable development features
-REACT_APP_DEBUG=true
+REACT_APP_DEBUG=false
 ```
 
 ### Backend Configuration
@@ -261,11 +274,11 @@ The backend uses environment variables for configuration:
 DATABASE_URL=sqlite:///products.db
 
 # Flask settings
-FLASK_ENV=development
-FLASK_DEBUG=true
+FLASK_ENV=production
+FLASK_DEBUG=false
 
 # CORS settings
-CORS_ORIGINS=http://localhost:3000
+CORS_ORIGINS=https://roman-zvir-pet-project.pp.ua,http://localhost:3000
 ```
 
 ## 🤝 Contributing
@@ -300,10 +313,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👨‍💻 Contact & Support
 
-**Roman Zvir** - Intern DevOps
+**Roman Zvir** - DevOps Engineer
 
+- 🌐 **Live Project**: [https://roman-zvir-pet-project.pp.ua/](https://roman-zvir-pet-project.pp.ua/)
 - 🐙 **GitHub**: [@roman-zvir](https://github.com/roman-zvir)
-- 📧 **Email**: [Get in touch](zwirr151@gmail.com)
+- 📧 **Email**: [zwirr151@gmail.com](mailto:zwirr151@gmail.com)
+- 💼 **LinkedIn**: Connect with me for professional inquiries
 
 
 

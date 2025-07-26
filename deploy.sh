@@ -57,9 +57,9 @@ fi
 
 print_success "Authenticated with gcloud"
 
-# Configure Docker for GCR if not already configured
-print_status "Configuring Docker for GCR..."
-gcloud auth configure-docker --quiet
+# Configure Docker for Artifact Registry if not already configured
+print_status "Configuring Docker for Artifact Registry..."
+gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
 # Check if cluster exists and is accessible
 print_status "Checking GKE cluster connectivity..."
@@ -70,21 +70,34 @@ fi
 
 print_success "Connected to GKE cluster"
 
-# Build and push images to GCR
+# Build and push images to Artifact Registry
 print_status "Building and pushing backend image..."
-docker build -t gcr.io/intern-466414/backend:latest ./backend
-docker push gcr.io/intern-466414/backend:latest
+docker build -t us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest ./backend
+docker push us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
 print_success "Backend image built and pushed"
 
 print_status "Building and pushing frontend image..."
-docker build -t gcr.io/intern-466414/frontend:latest ./frontend
-docker push gcr.io/intern-466414/frontend:latest
+docker build -t us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest ./frontend
+docker push us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 print_success "Frontend image built and pushed"
 
 # Deploy to GKE
-print_status "Updating deployments..."
-kubectl set image deployment/backend backend=gcr.io/intern-466414/backend:latest
-kubectl set image deployment/frontend frontend=gcr.io/intern-466414/frontend:latest
+print_status "Applying Kubernetes configurations..."
+
+# Apply backend deployment first
+kubectl apply -f k8s/backend-deployment.yaml
+
+# Apply services
+kubectl apply -f k8s/backend-service.yaml
+kubectl apply -f k8s/frontend-service.yaml
+
+# Apply SSL certificate and ingress (fixed configuration)
+kubectl apply -f k8s/ssl-certificate.yaml
+kubectl apply -f k8s/ingress.yaml
+
+print_status "Updating deployments with new images..."
+kubectl set image deployment/backend backend=us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
+kubectl set image deployment/frontend frontend=us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 
 print_status "Waiting for rollout to complete..."
 kubectl rollout status deployment/backend --timeout=300s
@@ -116,17 +129,30 @@ fi
 print_success "Deployment complete!"
 
 echo
-echo "🌐 Your application is live:"
-echo "   Frontend: http://${FRONTEND_IP}:3000"
-echo "   Backend:  http://${BACKEND_IP}:5000/api/products"
+echo "🌐 Your application is accessible via:"
+echo "   📱 Domain:    https://roman-zvir-pet-project.pp.ua"
+echo "   🔧 Frontend:  http://${FRONTEND_IP}"
+echo "   🛠️  Backend:   http://${BACKEND_IP}/api/products"
+echo
+echo "📊 Ingress Status:"
+kubectl get ingress app-ingress
 echo
 
 # Test the deployment
-print_status "Testing backend API..."
+print_status "Testing backend API via LoadBalancer..."
 if curl -s "http://${BACKEND_IP}:5000/api/products" > /dev/null; then
-    print_success "Backend API is responding"
+    print_success "Backend API is responding via LoadBalancer"
 else
-    print_warning "Backend API test failed - it might need a moment to start"
+    print_warning "Backend API test failed via LoadBalancer - it might need a moment to start"
+fi
+
+print_status "Testing backend API via domain (ingress)..."
+if curl -s -k "https://roman-zvir-pet-project.pp.ua/api/health" | grep -q "healthy"; then
+    print_success "Backend API is responding via domain"
+else
+    print_warning "Backend API test failed via domain - ingress might need time to propagate"
+    print_status "Testing what domain returns:"
+    curl -s -k "https://roman-zvir-pet-project.pp.ua/api/health" | head -50
 fi
 
 # Show pod status

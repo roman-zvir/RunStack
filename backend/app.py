@@ -1,4 +1,5 @@
 import argparse
+import os
 import re
 from datetime import datetime
 
@@ -93,7 +94,7 @@ if __name__ == "__main__":
 
     def ipv4_or_localhost_regex_type(arg_value):
         ipv4_or_localhost_regex = re.compile(
-            r"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.)){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(localhost|127(\.[0-9]+){0,2}\.[0-9]+)$"
+            r"^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\.)){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$|^(localhost|127(\.[0-9]+){0,2}\.[0-9]+|0\.0\.0\.0)$"
         )
         if not ipv4_or_localhost_regex.match(arg_value):
             raise argparse.ArgumentTypeError("invalid ipv4 or localhost value")
@@ -103,11 +104,14 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--host",
-        help="deletes all data",
-        default="localhost",
+        help="Host to bind to (default: 0.0.0.0 for container compatibility)",
+        default="0.0.0.0",
         type=ipv4_or_localhost_regex_type,
     )
-    parser.add_argument("--port", help="add default data", default=5000, type=int)
+    parser.add_argument("--port", help="Port to bind to", default=5000, type=int)
     args = parser.parse_args()
     print(args.host, args.port)
-    app.run(host=args.host, port=args.port, debug=True)
+
+    # Use production settings if FLASK_ENV is not development
+    debug_mode = os.environ.get("FLASK_ENV") == "development"
+    app.run(host=args.host, port=args.port, debug=debug_mode)
