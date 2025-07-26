@@ -1,18 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app-ingress
+  name: app-ingress-http
   annotations:
-    # Reserve a static IP for the ingress
     kubernetes.io/ingress.global-static-ip-name: "app-static-ip"
-    # Enable Google-managed SSL certificate
-    networking.gke.io/managed-certificates: "app-ssl-cert"
-    # Allow HTTP initially, will redirect to HTTPS once SSL is ready
     kubernetes.io/ingress.allow-http: "true"
 spec:
   ingressClassName: "gce"
   rules:
-    # Main domain
     - host: roman-zvir-pet-project.pp.ua
       http:
         paths:
@@ -32,7 +27,6 @@ spec:
                 name: frontend
                 port:
                   number: 80
-    # Optionally add www subdomain
     - host: www.roman-zvir-pet-project.pp.ua
       http:
         paths:
@@ -52,9 +46,3 @@ spec:
                 name: frontend
                 port:
                   number: 80
-  # For HTTPS (you'll need to set up SSL certificates)
-  tls:
-    - hosts:
-        - roman-zvir-pet-project.pp.ua
-        - www.roman-zvir-pet-project.pp.ua
-      secretName: app-tls-secret

@@ -9,7 +9,7 @@ spec:
     app: backend
   ports:
     - protocol: TCP
-      port: 80
+      port: 443
       targetPort: 5000
-      nodePort: 30080
+      nodePort: 31977
   type: NodePort

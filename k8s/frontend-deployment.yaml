@@ -17,7 +17,7 @@ spec:
           image: us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 3000
+            - containerPort: 80
           env:
             - name: REACT_APP_BASE_URL
-              value: "https://your-domain.com/api"
+              value: "https://roman-zvir-pet-project.pp.ua/api"

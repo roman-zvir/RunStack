@@ -82,7 +82,20 @@ docker push us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 print_success "Frontend image built and pushed"
 
 # Deploy to GKE
-print_status "Updating deployments..."
+print_status "Applying Kubernetes configurations..."
+
+# Apply backend deployment first
+kubectl apply -f k8s/backend-deployment.yaml
+
+# Apply services
+kubectl apply -f k8s/backend-service.yaml
+kubectl apply -f k8s/frontend-service.yaml
+
+# Apply SSL certificate and ingress (fixed configuration)
+kubectl apply -f k8s/ssl-certificate.yaml
+kubectl apply -f k8s/ingress.yaml
+
+print_status "Updating deployments with new images..."
 kubectl set image deployment/backend backend=us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest
 kubectl set image deployment/frontend frontend=us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest
 
@@ -116,17 +129,30 @@ fi
 print_success "Deployment complete!"
 
 echo
-echo "🌐 Your application is live:"
-echo "   Frontend: http://${FRONTEND_IP}:3000"
-echo "   Backend:  http://${BACKEND_IP}:5000/api/products"
+echo "🌐 Your application is accessible via:"
+echo "   📱 Domain:    https://roman-zvir-pet-project.pp.ua"
+echo "   🔧 Frontend:  http://${FRONTEND_IP}"
+echo "   🛠️  Backend:   http://${BACKEND_IP}/api/products"
+echo
+echo "📊 Ingress Status:"
+kubectl get ingress app-ingress
 echo
 
 # Test the deployment
-print_status "Testing backend API..."
+print_status "Testing backend API via LoadBalancer..."
 if curl -s "http://${BACKEND_IP}:5000/api/products" > /dev/null; then
-    print_success "Backend API is responding"
+    print_success "Backend API is responding via LoadBalancer"
 else
-    print_warning "Backend API test failed - it might need a moment to start"
+    print_warning "Backend API test failed via LoadBalancer - it might need a moment to start"
+fi
+
+print_status "Testing backend API via domain (ingress)..."
+if curl -s -k "https://roman-zvir-pet-project.pp.ua/api/health" | grep -q "healthy"; then
+    print_success "Backend API is responding via domain"
+else
+    print_warning "Backend API test failed via domain - ingress might need time to propagate"
+    print_status "Testing what domain returns:"
+    curl -s -k "https://roman-zvir-pet-project.pp.ua/api/health" | head -50
 fi
 
 # Show pod status
