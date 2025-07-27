@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    environment: development
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        environment: development
+    spec:
+      containers:
+        - name: frontend
+          image: us-central1-docker.pkg.dev/intern-466414/dev-repo/frontend:dev-latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: REACT_APP_BASE_URL
+              value: "https://dev.roman-zvir-pet-project.pp.ua/api"
+            - name: NODE_ENV
+              value: "development"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
