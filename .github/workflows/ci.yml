@@ -11,27 +11,7 @@ env:
   NODE_VERSION: '18'
   PYTHON_VERSION: '3.11'
   GCP_PROJECT: 'intern-466414'
-  ARTIFACT_REGISTRY: 'us-central1-docke      - na      - name: � Deploy to Kubernetes
-        run: |
-          # Update image tags in k8s manifests with branch-specific repository
-          # Handle current prod-repo/dev-repo images and legacy my-repo images
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/prod-repo/backend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/dev-repo/backend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/prod-repo/frontend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/dev-repo/frontend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml🚀 Deploy to Kubernetes
-        run: |
-          # Update image tags in k8s manifests with branch-specific repository
-          # Handle both current prod-repo images and legacy my-repo images
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/prod-repo/backend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/dev-repo/backend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/prod-repo/frontend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/dev-repo/frontend:.*|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml.dev'
+  ARTIFACT_REGISTRY: 'us-central1-docker.pkg.dev'
   DEV_REPOSITORY_NAME: 'dev-repo'
   PROD_REPOSITORY_NAME: 'prod-repo'
 
@@ -47,7 +27,6 @@ jobs:
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
-
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
