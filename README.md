@@ -10,10 +10,33 @@
   [Live Demo](https://roman-zvir-pet-project.pp.ua/) • [API Docs](https://roman-zvir-pet-project.pp.ua/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
 </div>
 
+
+
+## 🖥️ Application Screenshots
+
+This section showcases the main interface and product management functionality of the application.
+
+
+
+### 📌 Main Page
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/6850b394-e7e5-463d-b6cd-6aefdbdf79a4" alt="Main Page" width="80%" />
+</div>
+
+The main page displays a list of available products in a clean and user-friendly layout. It allows users to easily browse and interact with the application.
+
 ---
 
+### ✏️ Adding or Editing a Product
 
-<img width="1932" height="969" alt="image" src="https://github.com/user-attachments/assets/6850b394-e7e5-463d-b6cd-6aefdbdf79a4" />
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/4e31bc77-567d-4c1e-8159-298960b49dd9" alt="Adding or Editing Product" width="80%" />
+</div>
+
+This form allows users to add new products or update existing ones, including fields like title, price, description, and image. It's designed for simplicity and efficiency.
+
+
 
 
 
