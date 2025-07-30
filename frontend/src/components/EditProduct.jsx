@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   patchProduct,
@@ -13,8 +13,29 @@ export function EditProduct() {
   const { id } = useParams();
   const updateProduct = async (e) => {
     e.preventDefault();
-    await patchProduct(id, title, price);
-    navigate("/");
+    // Validate inputs
+    if (!title.trim()) {
+      alert('Please enter a product title');
+      return;
+    }
+    if (!price.trim() || isNaN(parseFloat(price))) {
+      alert('Please enter a valid price');
+      return;
+    }
+    try {
+      await patchProduct(id, title, price);
+      navigate("/");
+    } catch (error) {
+      let errorMessage = 'Failed to update product. ';
+      if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please check the console for details.';
+      }
+      alert(errorMessage);
+    }
   };
 
   const getProductById = useCallback(async () => {

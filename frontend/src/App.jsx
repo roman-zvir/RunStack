@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <div className="conteiner">
+      <div className="container">
         <div className="columns">
           <div className="column is-half is-offset-one-quarter">
             <BrowserRouter>
