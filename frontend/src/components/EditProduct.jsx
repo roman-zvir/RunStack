@@ -8,18 +8,30 @@ import {
 export function EditProduct() {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
+  const validate = () => {
+    const newErrors = {};
+    if (!title.trim()) {
+      newErrors.title = "Title is required.";
+    } else if (title.trim().length < 3) {
+      newErrors.title = "Title must be at least 3 characters.";
+    }
+    if (!price.toString().trim()) {
+      newErrors.price = "Price is required.";
+    } else if (isNaN(Number(price)) || Number(price) <= 0) {
+      newErrors.price = "Price must be a positive number.";
+    }
+    return newErrors;
+  };
+
   const updateProduct = async (e) => {
     e.preventDefault();
-    // Validate inputs
-    if (!title.trim()) {
-      alert('Please enter a product title');
-      return;
-    }
-    if (!price.trim() || isNaN(parseFloat(price))) {
-      alert('Please enter a valid price');
+    const validationErrors = validate();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
     try {
@@ -34,7 +46,7 @@ export function EditProduct() {
       } else {
         errorMessage += 'Please check the console for details.';
       }
-      alert(errorMessage);
+      setErrors({ submit: errorMessage });
     }
   };
 
@@ -51,28 +63,38 @@ export function EditProduct() {
   if (isLoading) return <p>Loading...</p>;
   return (
     <div>
-      <form onSubmit={updateProduct}>
+      <form onSubmit={updateProduct} noValidate>
         <div className="field">
           <label className="label">Title</label>
           <input
-            className="input"
+            className={`input${errors.title ? " is-danger" : ""}`}
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
+          {errors.title && (
+            <p className="help is-danger">{errors.title}</p>
+          )}
         </div>
 
         <div className="field">
           <label className="label">Price</label>
           <input
-            className="input"
+            className={`input${errors.price ? " is-danger" : ""}`}
             type="text"
             placeholder="Price"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
+          {errors.price && (
+            <p className="help is-danger">{errors.price}</p>
+          )}
         </div>
+
+        {errors.submit && (
+          <div className="notification is-danger is-light">{errors.submit}</div>
+        )}
 
         <div className="field">
           <button className="button is-primary">Update</button>
