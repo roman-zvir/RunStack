@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: us-central1-docker.pkg.dev/intern-466414/prod-repo/frontend:latest
+          image: developmentbranch.azurecr.io/frontend-prod:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

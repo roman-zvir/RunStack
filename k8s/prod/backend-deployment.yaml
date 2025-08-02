@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: us-central1-docker.pkg.dev/intern-466414/prod-repo/backend:latest
+          image: developmentbranch.azurecr.io/backend-prod:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

@@ -1,8 +1,0 @@
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: app-ssl-cert
-spec:
-  domains:
-    - roman-zvir-pet-project.pp.ua
-    - www.roman-zvir-pet-project.pp.ua

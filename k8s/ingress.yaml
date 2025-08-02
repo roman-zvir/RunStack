@@ -3,14 +3,14 @@ kind: Ingress
 metadata:
   name: app-ingress
   annotations:
-    # Reserve a static IP for the ingress
-    kubernetes.io/ingress.global-static-ip-name: "app-static-ip"
-    # Enable Google-managed SSL certificate
-    networking.gke.io/managed-certificates: "app-ssl-cert"
-    # Allow HTTP initially, will redirect to HTTPS once SSL is ready
+    # Azure Application Gateway specific annotations
+    kubernetes.io/ingress.class: azure/application-gateway
+    # Allow HTTP traffic
     kubernetes.io/ingress.allow-http: "true"
+    # SSL redirect
+    appgw.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
-  ingressClassName: "gce"
+  ingressClassName: "nginx"
   rules:
     # Main domain
     - host: roman-zvir-pet-project.pp.ua

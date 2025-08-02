@@ -10,10 +10,10 @@ on:
 env:
   NODE_VERSION: '18'
   PYTHON_VERSION: '3.11'
-  GCP_PROJECT: 'intern-466414'
-  ARTIFACT_REGISTRY: 'us-central1-docker.pkg.dev'
-  DEV_REPOSITORY_NAME: 'dev-repo'
-  PROD_REPOSITORY_NAME: 'prod-repo'
+  ACR_NAME: 'developmentBranch'
+  ACR_LOGIN_SERVER: 'developmentbranch.azurecr.io'
+  AZURE_RESOURCE_GROUP: 'NetworkWatcherRG'
+  AKS_CLUSTER_NAME: 'devclasterroman'
 
 jobs:
   # Frontend CI Jobs
@@ -147,7 +147,7 @@ jobs:
 
   # Docker Build Jobs
   docker-build:
-    name: 🐳 Docker Build & Push to Artifact Registry
+    name: 🐳 Docker Build & Push to Azure Container Registry
     runs-on: ubuntu-latest
     needs: [frontend-test, backend-test]
     if: github.event_name == 'push'
@@ -156,80 +156,66 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: � Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 🔧 Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-
-      - name: 🐳 Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker ${{ env.ARTIFACT_REGISTRY }}
+      - name: � Login to Azure Container Registry
+        run: az acr login --name ${{ env.ACR_NAME }}
 
       - name: 🐳 Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: 🔍 Determine repository based on branch
-        id: repo
+      - name: 🔍 Determine image tags based on branch
+        id: tags
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "repository=${{ env.PROD_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-prod:latest" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:latest" >> $GITHUB_OUTPUT
+            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
             echo "environment=production" >> $GITHUB_OUTPUT
-            echo "tag_suffix=prod" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/dev" || "${{ github.ref }}" == "refs/heads/Dev" ]]; then
-            echo "repository=${{ env.DEV_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:latest" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:latest" >> $GITHUB_OUTPUT
+            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
             echo "environment=development" >> $GITHUB_OUTPUT
-            echo "tag_suffix=dev" >> $GITHUB_OUTPUT
           else
-            echo "repository=${{ env.DEV_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:latest" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:latest" >> $GITHUB_OUTPUT
+            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
             echo "environment=development" >> $GITHUB_OUTPUT
-            echo "tag_suffix=dev" >> $GITHUB_OUTPUT
-          fi
-
-      - name: 🏗️ Create repository if it doesn't exist
-        run: |
-          # Check if repository exists, create if it doesn't
-          if ! gcloud artifacts repositories describe ${{ steps.repo.outputs.repository }} --location=us-central1 --quiet &> /dev/null; then
-            echo "🔨 Creating repository ${{ steps.repo.outputs.repository }}..."
-            gcloud artifacts repositories create ${{ steps.repo.outputs.repository }} \
-              --repository-format=docker \
-              --location=us-central1 \
-              --description="${{ steps.repo.outputs.environment }} environment container registry"
-          else
-            echo "✅ Repository ${{ steps.repo.outputs.repository }} already exists"
           fi
 
       - name: 🏗️ Build and push backend image
         run: |
-          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:latest \
-                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:${{ github.sha }} \
-                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:${{ steps.repo.outputs.tag_suffix }}-latest \
+          docker build -t ${{ steps.tags.outputs.backend_image }} \
+                       -t ${{ steps.tags.outputs.backend_image_sha }} \
                        ./backend
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:latest
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:${{ github.sha }}
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/backend:${{ steps.repo.outputs.tag_suffix }}-latest
+          docker push ${{ steps.tags.outputs.backend_image }}
+          docker push ${{ steps.tags.outputs.backend_image_sha }}
 
       - name: 🏗️ Build and push frontend image
         run: |
-          docker build -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:latest \
-                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:${{ github.sha }} \
-                       -t ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:${{ steps.repo.outputs.tag_suffix }}-latest \
+          docker build -t ${{ steps.tags.outputs.frontend_image }} \
+                       -t ${{ steps.tags.outputs.frontend_image_sha }} \
                        ./frontend
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:latest
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:${{ github.sha }}
-          docker push ${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.repo.outputs.repository }}/frontend:${{ steps.repo.outputs.tag_suffix }}-latest
+          docker push ${{ steps.tags.outputs.frontend_image }}
+          docker push ${{ steps.tags.outputs.frontend_image_sha }}
 
       - name: 📝 Output deployment info
         run: |
-          echo "🚀 Images pushed to ${{ steps.repo.outputs.environment }} repository:"
-          echo "📦 Repository: ${{ steps.repo.outputs.repository }}"
-          echo "🏷️ Tags: latest, ${{ github.sha }}, ${{ steps.repo.outputs.tag_suffix }}-latest"
-          echo "🌍 Environment: ${{ steps.repo.outputs.environment }}"
+          echo "🚀 Images pushed to ${{ steps.tags.outputs.environment }} environment:"
+          echo "🏷️ Backend Image: ${{ steps.tags.outputs.backend_image }}"
+          echo "🏷️ Frontend Image: ${{ steps.tags.outputs.frontend_image }}"
+          echo "🌍 Environment: ${{ steps.tags.outputs.environment }}"
 
   # Deployment Job
   deploy:
-    name: 🚀 Deploy to GCP
+    name: 🚀 Deploy to Azure AKS
     runs-on: ubuntu-latest
     needs: [docker-build]
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev')
@@ -238,65 +224,61 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      - name: 🔐 Authenticate to Google Cloud
-        uses: google-github-actions/auth@v1
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: 🔧 Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+      - name: 🔧 Set up kubectl
+        uses: azure/setup-kubectl@v3
 
-      - name: 🔧 Install GKE auth plugin
+      - name: 🔧 Get AKS credentials
         run: |
-          gcloud components install gke-gcloud-auth-plugin
-          echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> $GITHUB_ENV
+          az aks get-credentials --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }}
 
-      - name: 🔧 Configure kubectl
-        run: |
-          gcloud container clusters get-credentials ${{ secrets.GKE_CLUSTER }} \
-            --zone ${{ secrets.GKE_ZONE }} \
-            --project ${{ secrets.GCP_PROJECT }}
-
-      - name: � Determine repository and environment for deployment
-        id: deploy_repo
+      - name: 🔍 Determine deployment environment and images
+        id: deploy_env
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "repository=${{ env.PROD_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
             echo "environment=production" >> $GITHUB_OUTPUT
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "manifest_path=k8s/prod/" >> $GITHUB_OUTPUT
           elif [[ "${{ github.ref }}" == "refs/heads/dev" || "${{ github.ref }}" == "refs/heads/Dev" ]]; then
-            echo "repository=${{ env.DEV_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
             echo "environment=development" >> $GITHUB_OUTPUT
-          else
-            echo "repository=${{ env.DEV_REPOSITORY_NAME }}" >> $GITHUB_OUTPUT
-            echo "environment=development" >> $GITHUB_OUTPUT
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "manifest_path=k8s/dev/" >> $GITHUB_OUTPUT
           fi
 
-      - name: �🚀 Deploy to Kubernetes
+      - name: 🚀 Deploy to Kubernetes
         run: |
-          # Update image tags in k8s manifests with branch-specific repository
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/backend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/backend:${{ github.sha }}|g" k8s/backend-deployment.yaml
-          sed -i "s|us-central1-docker.pkg.dev/intern-466414/my-repo/frontend:latest|${{ env.ARTIFACT_REGISTRY }}/${{ env.GCP_PROJECT }}/${{ steps.deploy_repo.outputs.repository }}/frontend:${{ github.sha }}|g" k8s/frontend-deployment.yaml
+          # Update image tags in k8s manifests
+          sed -i "s|developmentbranch.azurecr.io/backend.*:.*|${{ steps.deploy_env.outputs.backend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}backend-deployment.yaml
+          sed -i "s|developmentbranch.azurecr.io/frontend.*:.*|${{ steps.deploy_env.outputs.frontend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}frontend-deployment.yaml
           
-          # Apply k8s manifests with validation
-          kubectl apply -f k8s/ --validate=true || {
+          # Apply k8s manifests
+          kubectl apply -f ${{ steps.deploy_env.outputs.manifest_path }} --validate=true || {
             echo "⚠️ Validation failed, applying without validation..."
-            kubectl apply -f k8s/ --validate=false
+            kubectl apply -f ${{ steps.deploy_env.outputs.manifest_path }} --validate=false
           }
           
-          # Wait for rollout
-          kubectl rollout status deployment/backend
-          kubectl rollout status deployment/frontend
+          # Apply common services if not using environment-specific manifests
+          if [[ "${{ steps.deploy_env.outputs.manifest_path }}" == "k8s/dev/" ]] || [[ "${{ steps.deploy_env.outputs.manifest_path }}" == "k8s/prod/" ]]; then
+            kubectl apply -f k8s/backend-service.yaml --validate=false
+            kubectl apply -f k8s/frontend-service.yaml --validate=false
+            kubectl apply -f k8s/ingress.yaml --validate=false
+          fi
           
-          # Wait for LoadBalancer services to get external IPs
-          echo "⏳ Waiting for LoadBalancer services to get external IPs..."
-          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/frontend --timeout=300s || echo "Frontend LoadBalancer timeout"
-          kubectl wait --for=jsonpath='{.status.loadBalancer.ingress}' service/backend --timeout=300s || echo "Backend LoadBalancer timeout"
+          # Wait for rollout
+          kubectl rollout status deployment/backend --timeout=300s
+          kubectl rollout status deployment/frontend --timeout=300s
 
       - name: 🔗 Get Service URLs
         run: |
           echo "📡 Getting service information..."
           
-          # Get external IPs
+          # Get external IPs from Azure Load Balancer
           FRONTEND_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
           BACKEND_IP=$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
           
@@ -317,8 +299,7 @@ jobs:
           echo "✅ Deployment successful!"
           echo "🔗 Frontend: http://$FRONTEND_IP"
           echo "🔗 Backend: http://$BACKEND_IP"
-          echo "🏷️ Repository: ${{ steps.deploy_repo.outputs.repository }}"
-          echo "🌍 Environment: ${{ steps.deploy_repo.outputs.environment }}"
+          echo " Environment: ${{ steps.deploy_env.outputs.environment }}"
           echo ""
           echo "📋 To check service status manually:"
           echo "kubectl get services"
