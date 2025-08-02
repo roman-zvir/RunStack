@@ -42,13 +42,14 @@ This form allows users to add new products or update existing ones, including fi
 
 ## 🎯 About
 
-React Python Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain.
+
+React Python Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain, now running on Microsoft Azure.
 
 ### ✨ Key Highlights
 
 - **🔄 Full-Stack**: React frontend with Flask REST API backend
 - **🐳 Containerized**: Docker-ready for any environment
-- **☁️ Cloud Native**: Deployed on Google Cloud Platform with Kubernetes
+- **☁️ Cloud Native**: Deployed on Microsoft Azure with Azure Kubernetes Service (AKS)
 - **🌐 Custom Domain**: Available at https://roman-zvir-pet-project.pp.ua/
 - **🔒 SSL Secured**: HTTPS enabled with SSL certificate
 - **🚀 CI/CD**: Automated builds and deployments with GitHub Actions
@@ -74,7 +75,7 @@ React Python Playground is a production-ready full-stack web application that de
 ### DevOps & Infrastructure
 - **Docker** - Containerization
 - **Kubernetes** - Container orchestration
-- **Google Cloud Platform** - Cloud hosting
+- **Microsoft Azure (AKS)** - Cloud hosting
 - **GitHub Actions** - CI/CD pipeline
 - **Docker Hub** - Container registry
 
@@ -196,14 +197,15 @@ Your application is **live and running** with a custom domain! 🎉
 
 ### Deployment Options
 
-#### 🔵 Google Cloud Platform (Current)
 
-The application is deployed using Google Kubernetes Engine (GKE) with a custom domain configuration. The setup includes:
+#### 🔵 Microsoft Azure (Current)
+
+The application is deployed using Azure Kubernetes Service (AKS) with a custom domain configuration. The setup includes:
 
 - **🌐 Custom Domain**: `roman-zvir-pet-project.pp.ua`
 - **🔒 SSL Certificate**: Automatic HTTPS with Let's Encrypt
-- **🚀 Load Balancer**: Google Cloud Load Balancer for high availability
-- **📊 Monitoring**: Cloud monitoring and logging enabled
+- **🚀 Load Balancer**: Azure Load Balancer for high availability
+- **📊 Monitoring**: Azure Monitor and logging enabled
 
 ```bash
 # Check deployment status
@@ -218,7 +220,7 @@ kubectl scale deployment frontend --replicas=3
 ./deploy.sh
 ```
 
-For detailed deployment instructions, see the Kubernetes manifests in the `k8s/` directory.
+For detailed deployment instructions, see the Kubernetes manifests in the `k8s/` directory and refer to Azure AKS documentation for cluster setup and management.
 
 #### 🐳 Local with Minikube
 
@@ -239,7 +241,7 @@ minikube service backend --url
 
 Deploy the Docker images to:
 - **AWS EKS** - Amazon Elastic Kubernetes Service
-- **Azure AKS** - Azure Kubernetes Service
+- **Azure AKS** - Azure Kubernetes Service (Recommended)
 - **DigitalOcean** - Kubernetes or Droplets
 - **Heroku** - Container deployment
 
@@ -320,7 +322,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ```bash
 # Fork and clone your fork
-git clone https://github.com/YOUR_USERNAME/react-python-playground.git
+git clone https://github.com/YOUR/react-python-playground.git
 cd react-python-playground
 
 # Add upstream remote

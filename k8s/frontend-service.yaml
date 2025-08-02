@@ -3,8 +3,9 @@ kind: Service
 metadata:
   name: frontend
   annotations:
-    # Reserve and use a static IP for this service
-    cloud.google.com/load-balancer-type: "External"
+    # Azure Load Balancer annotations
+    service.beta.kubernetes.io/azure-load-balancer-internal: "false"
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: "MC_myResourceGroup_myAKSCluster_eastus"
 spec:
   selector:
     app: frontend

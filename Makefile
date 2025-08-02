@@ -121,8 +121,8 @@ docker-stop: ## Stop Docker containers
 # Deployment commands
 deploy-local: docker-build docker-stop docker-run ## Deploy locally with Docker
 
-deploy-gcp: ## Deploy to Google Cloud Platform
-	@echo "🚀 Deploying to GCP..."
+deploy-azure: ## Deploy to Azure Container Registry and AKS
+	@echo "🚀 Deploying to Azure..."
 	./deploy.sh
 
 # Cleanup commands
