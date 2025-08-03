@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-prod-ghcr
+  namespace: default
+  labels:
+    app: backend-prod
+    source: github-packages
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-prod
+      source: github-packages
+  template:
+    metadata:
+      labels:
+        app: backend-prod
+        source: github-packages
+    spec:
+      containers:
+      - name: backend
+        image: ghcr.io/roman-zvir/backend-prod:latest
+        ports:
+        - containerPort: 5000
+          name: http
+        env:
+        - name: FLASK_ENV
+          value: "production"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secrets
+              key: database-url
+              optional: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+      imagePullSecrets:
+      - name: ghcr-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-prod-ghcr-service
+  namespace: default
+  labels:
+    app: backend-prod
+    source: github-packages
+spec:
+  selector:
+    app: backend-prod
+    source: github-packages
+  ports:
+  - port: 5000
+    targetPort: 5000
+    protocol: TCP
+    name: http
+  type: ClusterIP

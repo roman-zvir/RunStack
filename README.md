@@ -110,15 +110,17 @@ Before you begin, ensure you have the following installed:
    cd react-python-playground
    ```
 
+
 2. **Using Docker (Recommended)**
    ```bash
-   # Start with Docker Compose
-   docker-compose up -d
-   
-   # Or build and run individually
+   # Build and run containers individually (no docker-compose.yml provided)
    docker build -t react-app ./frontend
    docker build -t flask-api ./backend
+   # You can run the containers with:
+   docker run -p 3000:3000 react-app
+   docker run -p 5000:5000 flask-api
    ```
+   > **Note:** There is no `docker-compose.yml` in this repository. If you want to use Docker Compose, you will need to create your own file.
 
 3. **Manual Setup**
    ```bash
@@ -128,7 +130,16 @@ Before you begin, ensure you have the following installed:
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    pip install -r requirements.txt
    python app.py
+   ```
+
+   ```bash
+   # Frontend setup (in a new terminal)
+   cd frontend
+   npm install
+   npm start
    
+
+   > **Note:** Make sure you have Python 3.8+ and Node.js 16+ installed. The backend runs on port 5000 and the frontend on port 3000 by default.
    # Frontend setup (new terminal)
    cd frontend
    npm install
@@ -322,7 +333,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ```bash
 # Fork and clone your fork
-git clone https://github.com/YOUR/react-python-playground.git
+git clone https://github.com/roman-zvir/react-python-playground.git
 cd react-python-playground
 
 # Add upstream remote

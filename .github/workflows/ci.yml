@@ -2,7 +2,7 @@ name: 🚀 CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "dev", "Dev" ]
+    branches: [ "main", "dev", "Dev"]
   pull_request:
     branches: [ "main", "dev", "Dev" ]
   workflow_dispatch:
@@ -147,10 +147,10 @@ jobs:
 
   # Docker Build Jobs
   docker-build:
-    name: 🐳 Docker Build & Push to Azure Container Registry
+    name: 🐳 Docker Build & Push to Azure Container Registry (Prod Only)
     runs-on: ubuntu-latest
     needs: [frontend-test, backend-test]
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: 📥 Checkout code
@@ -176,13 +176,8 @@ jobs:
             echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
             echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
             echo "environment=production" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/dev" || "${{ github.ref }}" == "refs/heads/Dev" ]]; then
-            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:latest" >> $GITHUB_OUTPUT
-            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:latest" >> $GITHUB_OUTPUT
-            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
-            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
-            echo "environment=development" >> $GITHUB_OUTPUT
           else
+            # For non-main branches, skip building or build dev images
             echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:latest" >> $GITHUB_OUTPUT
             echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:latest" >> $GITHUB_OUTPUT
             echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
@@ -191,6 +186,7 @@ jobs:
           fi
 
       - name: 🏗️ Build and push backend image
+        if: github.ref == 'refs/heads/main'  # Only build prod images
         run: |
           docker build -t ${{ steps.tags.outputs.backend_image }} \
                        -t ${{ steps.tags.outputs.backend_image_sha }} \
@@ -199,6 +195,7 @@ jobs:
           docker push ${{ steps.tags.outputs.backend_image_sha }}
 
       - name: 🏗️ Build and push frontend image
+        if: github.ref == 'refs/heads/main'  # Only build prod images
         run: |
           docker build -t ${{ steps.tags.outputs.frontend_image }} \
                        -t ${{ steps.tags.outputs.frontend_image_sha }} \
