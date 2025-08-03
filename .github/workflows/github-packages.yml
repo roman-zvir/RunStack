@@ -2,7 +2,7 @@ name: 📦 Pull from Azure & Push to GitHub Packages
 
 on:
   push:
-    branches: [ "main" ]  # Only main branch for prod images
+    branches: [ "main", "Dev", "feature/start-using-github-packages" ]  # Only main branch for prod images
   workflow_dispatch:
 
 env:
