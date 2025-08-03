@@ -2,7 +2,7 @@ name: 📦 Pull from Azure & Push to GitHub Packages
 
 on:
   push:
-    branches: [ "main", "Dev" ]  # Only main branch for prod images
+    branches: [ "main"]  # Only main branch for prod images
   workflow_dispatch:
 
 env:
@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev' || github.ref == 'refs/heads/feature/start-using-github-packages'  #run for main and Dev branches
+    if: github.ref == 'refs/heads/main'  #run for main branch only
 
     strategy:
       matrix:
