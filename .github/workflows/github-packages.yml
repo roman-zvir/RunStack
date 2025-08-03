@@ -1,0 +1,101 @@
+name: 📦 Pull from Azure & Push to GitHub Packages
+
+on:
+  push:
+    branches: [ "main" ]  # Only main branch for prod images
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_BASE: ghcr.io/${{ github.repository_owner }}
+  ACR_LOGIN_SERVER: 'developmentbranch.azurecr.io'
+  ACR_NAME: 'developmentBranch'
+
+jobs:
+  pull-and-push:
+    name: � Pull from Azure & Push to GitHub Packages
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    if: github.ref == 'refs/heads/main'  # Only run for main branch
+
+    strategy:
+      matrix:
+        include:
+          - azure_image: backend-prod
+            github_image: backend-prod
+          - azure_image: frontend-prod
+            github_image: frontend-prod
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🔐 Login to Azure Container Registry
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Pull from Azure and Push to GitHub Packages
+        run: |
+          # Pull the production image from Azure
+          AZURE_IMAGE="${{ env.ACR_LOGIN_SERVER }}/${{ matrix.azure_image }}:latest"
+          GITHUB_IMAGE="${{ env.IMAGE_BASE }}/${{ matrix.github_image }}:latest"
+          GITHUB_IMAGE_SHA="${{ env.IMAGE_BASE }}/${{ matrix.github_image }}:${{ github.sha }}"
+          
+          echo "🔽 Pulling from Azure: $AZURE_IMAGE"
+          docker pull $AZURE_IMAGE
+          
+          echo "🏷️ Tagging for GitHub Packages..."
+          docker tag $AZURE_IMAGE $GITHUB_IMAGE
+          docker tag $AZURE_IMAGE $GITHUB_IMAGE_SHA
+          
+          echo "🔼 Pushing to GitHub Packages..."
+          docker push $GITHUB_IMAGE
+          docker push $GITHUB_IMAGE_SHA
+          
+          echo "✅ Successfully mirrored ${{ matrix.azure_image }} to GitHub Packages"
+
+      - name: 📝 Output image details
+        run: |
+          echo "🚀 Successfully mirrored from Azure to GitHub Packages:"
+          echo "📦 Azure Image: ${{ env.ACR_LOGIN_SERVER }}/${{ matrix.azure_image }}:latest"
+          echo "📦 GitHub Image: ${{ env.IMAGE_BASE }}/${{ matrix.github_image }}:latest"
+          echo "�️ GitHub SHA Tag: ${{ env.IMAGE_BASE }}/${{ matrix.github_image }}:${{ github.sha }}"
+
+  summary:
+    name: 📊 Deployment Summary
+    runs-on: ubuntu-latest
+    needs: pull-and-push
+    if: always()
+    
+    steps:
+      - name: 📝 Generate summary
+        run: |
+          echo "## 📦 GitHub Packages Mirror Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🐳 Production Images Mirrored from Azure" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Source**: Azure Container Registry (\`${{ env.ACR_LOGIN_SERVER }}\`)" >> $GITHUB_STEP_SUMMARY
+          echo "**Destination**: GitHub Packages (\`${{ env.REGISTRY }}\`)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- 🖥️ **Frontend**: \`${{ env.IMAGE_BASE }}/frontend-prod:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔧 **Backend**: \`${{ env.IMAGE_BASE }}/backend-prod:latest\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📋 Available Tags" >> $GITHUB_STEP_SUMMARY
+          echo "- \`latest\` - Latest production build from Azure" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ github.sha }}\` - This specific commit" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 View Packages" >> $GITHUB_STEP_SUMMARY
+          echo "[📦 GitHub Packages](https://github.com/${{ github.repository_owner }}?tab=packages&repo_name=${{ github.event.repository.name }})" >> $GITHUB_STEP_SUMMARY
