@@ -2,12 +2,12 @@
   <h1>🚀 React Python Playground</h1>
   <p>A modern full-stack web application built with React and Flask - Roman Zvir's Pet Project</p>
 
-  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://roman-zvir-pet-project.pp.ua/)
+  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://runstack.pp.ua/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://hub.docker.com/u/romanzvir)
   [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/roman-zvir/react-python-playground/actions)
 
-  [Live Demo](https://roman-zvir-pet-project.pp.ua/) • [API Docs](https://roman-zvir-pet-project.pp.ua/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
+  [Live Demo](https://runstack.pp.ua/) • [API Docs](https://runstack.pp.ua/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
 </div>
 
 
@@ -50,7 +50,7 @@ React Python Playground is a production-ready full-stack web application that de
 - **🔄 Full-Stack**: React frontend with Flask REST API backend
 - **🐳 Containerized**: Docker-ready for any environment
 - **☁️ Cloud Native**: Deployed on Microsoft Azure with Azure Kubernetes Service (AKS)
-- **🌐 Custom Domain**: Available at https://roman-zvir-pet-project.pp.ua/
+- **🌐 Custom Domain**: Available at https://runstack.pp.ua/
 - **🔒 SSL Secured**: HTTPS enabled with SSL certificate
 - **🚀 CI/CD**: Automated builds and deployments with GitHub Actions
 - **📱 Responsive**: Mobile-first design with Bulma CSS framework
@@ -203,8 +203,8 @@ Your application is **live and running** with a custom domain! 🎉
 
 | Service | URL | Status |
 |---------|-----|--------|
-| 🌐 **Frontend** | [https://roman-zvir-pet-project.pp.ua/](https://roman-zvir-pet-project.pp.ua/) | ✅ Live |
-| 🔌 **Backend API** | [https://roman-zvir-pet-project.pp.ua/api/products](https://roman-zvir-pet-project.pp.ua/api/products) | ✅ Live |
+| 🌐 **Frontend** | [https://runstack.pp.ua/](https://runstack.pp.ua/) | ✅ Live |
+| 🔌 **Backend API** | [https://runstack.pp.ua/api/products](https://runstack.pp.ua/api/products) | ✅ Live |
 
 ### Deployment Options
 
@@ -213,7 +213,7 @@ Your application is **live and running** with a custom domain! 🎉
 
 The application is deployed using Azure Kubernetes Service (AKS) with a custom domain configuration. The setup includes:
 
-- **🌐 Custom Domain**: `roman-zvir-pet-project.pp.ua`
+- **🌐 Custom Domain**: `runstack.pp.ua`
 - **🔒 SSL Certificate**: Automatic HTTPS with Let's Encrypt
 - **🚀 Load Balancer**: Azure Load Balancer for high availability
 - **📊 Monitoring**: Azure Monitor and logging enabled
@@ -259,7 +259,7 @@ Deploy the Docker images to:
 ## 📚 API Reference
 
 ### Base URL
-- **Production**: `https://roman-zvir-pet-project.pp.ua/api`
+- **Production**: `https://runstack.pp.ua/api`
 - **Local**: `http://localhost:5000/api`
 
 ### Endpoints
@@ -276,10 +276,10 @@ Deploy the Docker images to:
 
 ```bash
 # Get all products
-curl -X GET "https://roman-zvir-pet-project.pp.ua/api/products"
+curl -X GET "https://runstack.pp.ua/api/products"
 
 # Create a product
-curl -X POST "https://roman-zvir-pet-project.pp.ua/api/products" \
+curl -X POST "https://runstack.pp.ua/api/products" \
   -H "Content-Type: application/json" \
   -d '{"name": "New Product", "price": 29.99}'
 ```
@@ -292,7 +292,7 @@ Create a `.env` file in the `frontend` directory:
 
 ```env
 # API Base URL - Production
-REACT_APP_BASE_URL=https://roman-zvir-pet-project.pp.ua/api
+REACT_APP_BASE_URL=https://runstack.pp.ua/api
 
 # API Base URL - Local development
 # REACT_APP_BASE_URL=http://localhost:5000/api
@@ -314,7 +314,7 @@ FLASK_ENV=production
 FLASK_DEBUG=false
 
 # CORS settings
-CORS_ORIGINS=https://roman-zvir-pet-project.pp.ua,http://localhost:3000
+CORS_ORIGINS=https://runstack.pp.ua,http://localhost:3000
 ```
 
 ## 🤝 Contributing
