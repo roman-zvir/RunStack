@@ -1,6 +1,7 @@
+
 <div align="center">
-  <h1>🚀 React Python Playground</h1>
-  <p>A modern full-stack web application built with React and Flask - Roman Zvir's Pet Project</p>
+  <h1>🚀 RunStack</h1>
+  <p>A modern full-stack web application template built with React and Flask - Roman Zvir's Pet Project</p>
 
   [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://runstack.pp.ua/)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -43,7 +44,9 @@ This form allows users to add new products or update existing ones, including fi
 ## 🎯 About
 
 
-React Python Playground is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain, now running on Microsoft Azure.
+
+RunStack is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with a React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain, now running on Microsoft Azure.
+
 
 ### ✨ Key Highlights
 
@@ -54,7 +57,7 @@ React Python Playground is a production-ready full-stack web application that de
 - **🔒 SSL Secured**: HTTPS enabled with SSL certificate
 - **🚀 CI/CD**: Automated builds and deployments with GitHub Actions
 - **📱 Responsive**: Mobile-first design with Bulma CSS framework
-- **� Production Ready**: Includes security, logging, and monitoring
+- **🏆 Production Ready**: Includes security, logging, and monitoring
 
 ## 🛠 Tech Stack
 
@@ -104,11 +107,25 @@ Before you begin, ensure you have the following installed:
 
 ### Installation
 
+## 🚀 Quick Start
+
+### Prerequisites
+
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/roman-zvir/react-python-playground.git
-   cd react-python-playground
+   git clone https://github.com/roman-zvir/RunStack.git
+   cd RunStack
    ```
+# Add upstream remote
+git remote add upstream https://github.com/roman-zvir/RunStack.git
+
+# Fork and clone your fork
+git clone https://github.com/roman-zvir/RunStack.git
+cd RunStack
+
+# Add upstream remote
+git remote add upstream https://github.com/roman-zvir/RunStack.git
+
 
 
 2. **Using Docker (Recommended)**
@@ -154,8 +171,9 @@ Before you begin, ensure you have the following installed:
 
 ### Project Structure
 
+
 ```
-react-python-playground/
+RunStack/
 ├── 📁 frontend/           # React application
 │   ├── 📁 src/
 │   │   ├── 📁 components/ # React components
@@ -332,6 +350,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ### Development Setup
 
 ```bash
+
 # Fork and clone your fork
 git clone https://github.com/roman-zvir/react-python-playground.git
 cd react-python-playground
@@ -344,6 +363,7 @@ git checkout -b feature/your-feature-name
 ```
 
 ## 📄 License
+
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -359,6 +379,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 
 ---
+
 
 <div align="center">
   <p>⭐ Star this repo if you found it helpful!</p>

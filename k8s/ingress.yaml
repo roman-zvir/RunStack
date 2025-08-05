@@ -7,6 +7,8 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # Allow HTTP traffic
     kubernetes.io/ingress.allow-http: "true"
+    # cert-manager annotations
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: "nginx"
   rules:
@@ -22,7 +24,7 @@ spec:
                 name: backend
                 port:
                   number: 80
-          # Frontend routes (catch-all)
+          # Frontend routes (catch-all, but exclude ACME challenges)
           - path: /
             pathType: Prefix
             backend:
@@ -42,7 +44,7 @@ spec:
                 name: backend
                 port:
                   number: 80
-          # Frontend routes (catch-all)
+          # Frontend routes (catch-all, but exclude ACME challenges)
           - path: /
             pathType: Prefix
             backend:
@@ -62,7 +64,7 @@ spec:
                 name: backend
                 port:
                   number: 80
-          # Frontend routes (catch-all)
+          # Frontend routes (catch-all, but exclude ACME challenges)
           - path: /
             pathType: Prefix
             backend:
