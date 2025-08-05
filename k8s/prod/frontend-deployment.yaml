@@ -1,6 +1,5 @@
 apiVersion: apps/v1
-kind            - name: REACT_APP_API_URL
-              value: "https://runstack.pp.ua/api"Deployment
+kind: Deployment
 metadata:
   name: frontend
   labels:
