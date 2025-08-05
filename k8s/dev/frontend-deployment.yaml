@@ -23,7 +23,7 @@ spec:
             - containerPort: 80
           env:
             - name: REACT_APP_BASE_URL
-              value: "https://dev.roman-zvir-pet-project.pp.ua/api"
+              value: "https://dev.runstack.pp.ua/api"
             - name: NODE_ENV
               value: "development"
           resources:

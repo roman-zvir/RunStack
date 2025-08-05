@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: main-domain-cert
+  namespace: default
+spec:
+  secretName: app-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - runstack.pp.ua
+    - dev.runstack.pp.ua
+    - www.runstack.pp.ua
