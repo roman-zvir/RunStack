@@ -7,11 +7,13 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     # Allow HTTP traffic
     kubernetes.io/ingress.allow-http: "true"
+    # cert-manager annotations
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: "nginx"
   rules:
     # Main domain
-    - host: roman-zvir-pet-project.pp.ua
+    - host: runstack.pp.ua
       http:
         paths:
           # Backend API routes (must come first - more specific)
@@ -22,7 +24,7 @@ spec:
                 name: backend
                 port:
                   number: 80
-          # Frontend routes (catch-all)
+          # Frontend routes (catch-all, but exclude ACME challenges)
           - path: /
             pathType: Prefix
             backend:
@@ -31,7 +33,7 @@ spec:
                 port:
                   number: 80
     # Optionally add www subdomain
-    - host: www.roman-zvir-pet-project.pp.ua
+    - host: www.runstack.pp.ua
       http:
         paths:
           # Backend API routes (must come first - more specific)
@@ -42,7 +44,27 @@ spec:
                 name: backend
                 port:
                   number: 80
-          # Frontend routes (catch-all)
+          # Frontend routes (catch-all, but exclude ACME challenges)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+    # Development subdomain
+    - host: dev.runstack.pp.ua
+      http:
+        paths:
+          # Backend API routes (must come first - more specific)
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 80
+          # Frontend routes (catch-all, but exclude ACME challenges)
           - path: /
             pathType: Prefix
             backend:
@@ -53,6 +75,7 @@ spec:
   # For HTTPS (you'll need to set up SSL certificates)
   tls:
     - hosts:
-        - roman-zvir-pet-project.pp.ua
-        - www.roman-zvir-pet-project.pp.ua
+        - runstack.pp.ua
+        - www.runstack.pp.ua
+        - dev.runstack.pp.ua
       secretName: app-tls-secret

@@ -1,5 +1,6 @@
 apiVersion: apps/v1
-kind: Deployment
+kind            - name: REACT_APP_API_URL
+              value: "https://dev.runstack.pp.ua/api"Deployment
 metadata:
   name: frontend
   labels:
@@ -23,7 +24,7 @@ spec:
             - containerPort: 80
           env:
             - name: REACT_APP_BASE_URL
-              value: "https://dev.roman-zvir-pet-project.pp.ua/api"
+              value: "https://dev.runstack.pp.ua/api"
             - name: NODE_ENV
               value: "development"
           resources:

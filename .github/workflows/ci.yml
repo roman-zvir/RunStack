@@ -2,7 +2,7 @@ name: 🚀 CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "dev", "Dev", "feature/start-using-github-packages" ]
+    branches: [ "main", "dev", "Dev"]
   pull_request:
     branches: [ "main", "dev", "Dev" ]
   workflow_dispatch:
