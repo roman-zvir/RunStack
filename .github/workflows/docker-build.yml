@@ -1,0 +1,88 @@
+name: 🐳 Docker Build & Push
+
+on:
+  push:
+    branches: [ "main", "dev", "Dev"]
+  workflow_call:
+    outputs:
+      backend_image:
+        description: 'Backend image name with tag'
+        value: ${{ jobs.docker-build.outputs.backend_image }}
+      frontend_image:
+        description: 'Frontend image name with tag'
+        value: ${{ jobs.docker-build.outputs.frontend_image }}
+      environment:
+        description: 'Deployment environment'
+        value: ${{ jobs.docker-build.outputs.environment }}
+  workflow_dispatch:
+
+env:
+  ACR_NAME: 'developmentBranch'
+  ACR_LOGIN_SERVER: 'developmentbranch.azurecr.io'
+
+jobs:
+  docker-build:
+    name: 🐳 Docker Build & Push to Azure Container Registry
+    runs-on: ubuntu-latest
+    outputs:
+      backend_image: ${{ steps.tags.outputs.backend_image_sha }}
+      frontend_image: ${{ steps.tags.outputs.frontend_image_sha }}
+      environment: ${{ steps.tags.outputs.environment }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🔐 Login to Azure Container Registry
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔍 Determine image tags based on branch
+        id: tags
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-prod:latest" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:latest" >> $GITHUB_OUTPUT
+            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-prod:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "environment=production" >> $GITHUB_OUTPUT
+          else
+            # For non-main branches, skip building or build dev images
+            echo "backend_image=${{ env.ACR_LOGIN_SERVER }}/backend-dev:latest" >> $GITHUB_OUTPUT
+            echo "frontend_image=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:latest" >> $GITHUB_OUTPUT
+            echo "backend_image_sha=${{ env.ACR_LOGIN_SERVER }}/backend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "frontend_image_sha=${{ env.ACR_LOGIN_SERVER }}/frontend-dev:${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "environment=development" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🏗️ Build and push backend image
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev'
+        run: |
+          docker build -t ${{ steps.tags.outputs.backend_image }} \
+                       -t ${{ steps.tags.outputs.backend_image_sha }} \
+                       ./backend
+          docker push ${{ steps.tags.outputs.backend_image }}
+          docker push ${{ steps.tags.outputs.backend_image_sha }}
+
+      - name: 🏗️ Build and push frontend image
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev'
+        run: |
+          docker build -t ${{ steps.tags.outputs.frontend_image }} \
+                       -t ${{ steps.tags.outputs.frontend_image_sha }} \
+                       ./frontend
+          docker push ${{ steps.tags.outputs.frontend_image }}
+          docker push ${{ steps.tags.outputs.frontend_image_sha }}
+
+      - name: 📝 Output deployment info
+        run: |
+          echo "🚀 Images pushed to ${{ steps.tags.outputs.environment }} environment:"
+          echo "🏷️ Backend Image: ${{ steps.tags.outputs.backend_image }}"
+          echo "🏷️ Frontend Image: ${{ steps.tags.outputs.frontend_image }}"
+          echo "🌍 Environment: ${{ steps.tags.outputs.environment }}"

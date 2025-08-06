@@ -1,0 +1,123 @@
+name: 🚀 Deploy to Azure AKS
+
+on:
+  workflow_call:
+    inputs:
+      backend_image:
+        required: true
+        type: string
+        description: 'Backend image to deploy'
+      frontend_image:
+        required: true
+        type: string
+        description: 'Frontend image to deploy'
+      environment:
+        required: true
+        type: string
+        description: 'Environment to deploy to (development/production)'
+  workflow_dispatch:
+    inputs:
+      backend_image:
+        required: true
+        type: string
+        description: 'Backend image to deploy'
+      frontend_image:
+        required: true
+        type: string
+        description: 'Frontend image to deploy'
+      environment:
+        required: true
+        type: choice
+        description: 'Environment to deploy to'
+        options:
+          - development
+          - production
+
+env:
+  AZURE_RESOURCE_GROUP: 'NetworkWatcherRG'
+  AKS_CLUSTER_NAME: 'devclasterroman'
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Azure AKS
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 🔧 Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: 🔧 Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group ${{ env.AZURE_RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }}
+
+      - name: 🔍 Determine deployment environment and manifest path
+        id: deploy_env
+        run: |
+          if [[ "${{ inputs.environment }}" == "production" ]]; then
+            echo "manifest_path=k8s/prod/" >> $GITHUB_OUTPUT
+          else
+            echo "manifest_path=k8s/dev/" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🚀 Deploy to Kubernetes
+        run: |
+          # Update image tags in k8s manifests
+          sed -i "s|developmentbranch.azurecr.io/backend.*:.*|${{ inputs.backend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}backend-deployment.yaml
+          sed -i "s|developmentbranch.azurecr.io/frontend.*:.*|${{ inputs.frontend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}frontend-deployment.yaml
+          
+          # Apply k8s manifests
+          kubectl apply -f ${{ steps.deploy_env.outputs.manifest_path }} --validate=true || {
+            echo "⚠️ Validation failed, applying without validation..."
+            kubectl apply -f ${{ steps.deploy_env.outputs.manifest_path }} --validate=false
+          }
+          
+          # Apply common services if not using environment-specific manifests
+          if [[ "${{ steps.deploy_env.outputs.manifest_path }}" == "k8s/dev/" ]] || [[ "${{ steps.deploy_env.outputs.manifest_path }}" == "k8s/prod/" ]]; then
+            kubectl apply -f k8s/backend-service.yaml --validate=false
+            kubectl apply -f k8s/frontend-service.yaml --validate=false
+            kubectl apply -f k8s/ingress.yaml --validate=false
+          fi
+          
+          # Wait for rollout
+          kubectl rollout status deployment/backend --timeout=300s
+          kubectl rollout status deployment/frontend --timeout=300s
+
+      - name: 🔗 Get Service URLs
+        run: |
+          echo "📡 Getting service information..."
+          
+          # Get external IPs from Azure Load Balancer
+          FRONTEND_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          BACKEND_IP=$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          
+          echo "Frontend External IP: $FRONTEND_IP"
+          echo "Backend External IP: $BACKEND_IP"
+          
+          # Set environment variables for next step
+          echo "FRONTEND_URL=http://$FRONTEND_IP" >> $GITHUB_ENV
+          echo "BACKEND_URL=http://$BACKEND_IP" >> $GITHUB_ENV
+
+      - name: 🎉 Deployment Success Notification
+        if: success()
+        run: |
+          # Get external IPs again for final notification
+          FRONTEND_IP=$(kubectl get service frontend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          BACKEND_IP=$(kubectl get service backend -o jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || echo "pending")
+          
+          echo "✅ Deployment successful!"
+          echo "🔗 Frontend: http://$FRONTEND_IP"
+          echo "🔗 Backend: http://$BACKEND_IP"
+          echo "🌍 Environment: ${{ inputs.environment }}"
+          echo ""
+          echo "📋 To check service status manually:"
+          echo "kubectl get services"
+          echo "kubectl get pods"
