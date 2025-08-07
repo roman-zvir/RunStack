@@ -71,8 +71,8 @@ jobs:
       - name: 🚀 Deploy to Kubernetes
         run: |
           # Update image tags in k8s manifests
-          sed -i "s|developmentbranch.azurecr.io/backend.*:.*|${{ inputs.backend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}backend-deployment.yaml
-          sed -i "s|developmentbranch.azurecr.io/frontend.*:.*|${{ inputs.frontend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}frontend-deployment.yaml
+          sed -i "s|runstackregistry.azurecr.io/backend.*:.*|${{ inputs.backend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}backend-deployment.yaml
+          sed -i "s|runstackregistry.azurecr.io/frontend.*:.*|${{ inputs.frontend_image }}|g" ${{ steps.deploy_env.outputs.manifest_path }}frontend-deployment.yaml
           
           # Apply k8s manifests
           kubectl apply -f ${{ steps.deploy_env.outputs.manifest_path }} --validate=true || {

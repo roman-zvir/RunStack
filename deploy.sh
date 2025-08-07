@@ -30,13 +30,13 @@ print_error() {
 
 
 # Azure Container Registry (ACR) settings
-ACR_NAME="developmentbranch"
-ACR_LOGIN_SERVER="developmentbranch.azurecr.io"
+ACR_NAME="runstackregistry"
+ACR_LOGIN_SERVER="runstackregistry.azurecr.io"
 
 
 # Azure Container Registry (ACR) settings
-ACR_NAME="developmentbranch"
-ACR_LOGIN_SERVER="developmentbranch.azurecr.io"
+ACR_NAME="runstackregistry"
+ACR_LOGIN_SERVER="runstackregistry.azurecr.io"
 
 # Detect current branch
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "unknown")

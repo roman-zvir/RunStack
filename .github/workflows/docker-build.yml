@@ -2,7 +2,7 @@ name: 🐳 Docker Build & Push
 
 on:
   push:
-    branches: [ "main", "dev", "Dev"]
+    branches: [ "main", "dev"]
   workflow_call:
     outputs:
       backend_image:
@@ -17,8 +17,8 @@ on:
   workflow_dispatch:
 
 env:
-  ACR_NAME: 'developmentBranch'
-  ACR_LOGIN_SERVER: 'developmentbranch.azurecr.io'
+  ACR_NAME: 'runstackregistry'
+  ACR_LOGIN_SERVER: 'runstackregistry.azurecr.io'
 
 jobs:
   docker-build:
@@ -63,7 +63,7 @@ jobs:
           fi
 
       - name: 🏗️ Build and push backend image
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
           docker build -t ${{ steps.tags.outputs.backend_image }} \
                        -t ${{ steps.tags.outputs.backend_image_sha }} \
@@ -72,7 +72,7 @@ jobs:
           docker push ${{ steps.tags.outputs.backend_image_sha }}
 
       - name: 🏗️ Build and push frontend image
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
         run: |
           docker build -t ${{ steps.tags.outputs.frontend_image }} \
                        -t ${{ steps.tags.outputs.frontend_image_sha }} \

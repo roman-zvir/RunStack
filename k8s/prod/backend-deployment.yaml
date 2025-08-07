@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: developmentbranch.azurecr.io/backend-prod:latest
+          image: runstackregistry.azurecr.io/backend-prod:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 5000

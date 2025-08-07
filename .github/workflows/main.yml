@@ -20,20 +20,20 @@ jobs:
     uses: ./.github/workflows/backend-ci.yml
     if: contains(github.event.head_commit.modified, 'backend/') || github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
 
-  # Docker Build & Push (only on push to main/Dev branches)
+  # Docker Build & Push (only on push to main/dev branches)
   docker-build:
     name: 🐳 Docker Build & Push
     uses: ./.github/workflows/docker-build.yml
     needs: [frontend-ci, backend-ci]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
     secrets: inherit
 
-  # Deploy (only on push to main/Dev branches)
+  # Deploy (only on push to main/dev branches)
   deploy:
     name: � Deploy
     uses: ./.github/workflows/deploy.yml
     needs: [docker-build]
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Dev')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev')
     with:
       backend_image: ${{ needs.docker-build.outputs.backend_image }}
       frontend_image: ${{ needs.docker-build.outputs.frontend_image }}

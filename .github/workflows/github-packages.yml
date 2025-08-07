@@ -8,8 +8,8 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_BASE: ghcr.io/${{ github.repository_owner }}
-  ACR_LOGIN_SERVER: 'developmentbranch.azurecr.io'
-  ACR_NAME: 'developmentBranch'
+  ACR_LOGIN_SERVER: 'runstackregistry.azurecr.io'
+  ACR_NAME: 'runstackregistry'
 
 jobs:
   pull-and-push:
