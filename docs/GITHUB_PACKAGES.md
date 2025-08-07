@@ -14,8 +14,8 @@ The project uses a **mirror strategy** where:
 - **Triggers**: Push to `main` branch only
 - **Purpose**: Builds and pushes **production images** to Azure Container Registry
 - **Images built**:
-  - `developmentbranch.azurecr.io/backend-prod:latest`
-  - `developmentbranch.azurecr.io/frontend-prod:latest`
+  - `runstackregistry.azurecr.io/backend-prod:latest`
+  - `runstackregistry.azurecr.io/frontend-prod:latest`
 - **Uses**: Production Dockerfiles (`Dockerfile.prod`) for optimized builds
 
 ### 2. GitHub Packages Mirror (`.github/workflows/github-packages.yml`)
@@ -31,8 +31,8 @@ The project uses a **mirror strategy** where:
 
 ### Azure Container Registry (Source)
 ```
-developmentbranch.azurecr.io/backend-prod:latest
-developmentbranch.azurecr.io/frontend-prod:latest
+runstackregistry.azurecr.io/backend-prod:latest
+runstackregistry.azurecr.io/frontend-prod:latest
 ```
 
 ### GitHub Packages (Mirror)

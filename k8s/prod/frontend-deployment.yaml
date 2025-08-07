@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: developmentbranch.azurecr.io/frontend-prod:latest
+          image: runstackregistry.azurecr.io/frontend-prod:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80

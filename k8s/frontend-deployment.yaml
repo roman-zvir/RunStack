@@ -1,6 +1,5 @@
 apiVersion: apps/v1
-k            - name: REACT_APP_API_URL
-              value: "https://runstack.pp.ua/api"d: Deployment
+kind: Deployment
 metadata:
   name: frontend
 spec:
@@ -15,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: developmentbranch.azurecr.io/frontend-dev:latest
+          image: runstackregistry.azurecr.io/frontend-dev:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
