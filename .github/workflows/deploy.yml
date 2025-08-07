@@ -34,7 +34,7 @@ on:
           - production
 
 env:
-  AZURE_RESOURCE_GROUP: 'NetworkWatcherRG'
+  AZURE_RESOURCE_GROUP: 'runstack'
   AKS_CLUSTER_NAME: 'runstackcluster'
 
 jobs:
