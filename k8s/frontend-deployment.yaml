@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend
+  labels:
+    app: frontend
 spec:
   replicas: 1
   selector:
@@ -14,10 +16,19 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: runstackregistry.azurecr.io/frontend-dev:latest
+          image: runstackregistry.azurecr.io/frontend-prod:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
           env:
             - name: REACT_APP_BASE_URL
               value: "https://runstack.pp.ua/api"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      imagePullSecrets:
+        - name: acr-secret  # required if ACR is private
