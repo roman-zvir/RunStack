@@ -35,7 +35,7 @@ on:
 
 env:
   AZURE_RESOURCE_GROUP: 'NetworkWatcherRG'
-  AKS_CLUSTER_NAME: 'devclasterroman'
+  AKS_CLUSTER_NAME: 'runstackcluster'
 
 jobs:
   deploy:
