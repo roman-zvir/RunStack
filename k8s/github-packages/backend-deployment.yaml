@@ -18,6 +18,8 @@ spec:
         app: backend-prod
         source: github-packages
     spec:
+      nodeSelector:
+        kubernetes.azure.com/agentpool: main
       containers:
       - name: backend
         image: ghcr.io/roman-zvir/backend-prod:latest

@@ -18,6 +18,8 @@ spec:
         app: frontend-prod
         source: github-packages
     spec:
+      nodeSelector:
+        kubernetes.azure.com/agentpool: main
       containers:
       - name: frontend
         image: ghcr.io/roman-zvir/frontend-prod:latest

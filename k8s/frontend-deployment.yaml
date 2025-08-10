@@ -12,6 +12,8 @@ spec:
       labels:
         app: frontend
     spec:
+      nodeSelector:
+        kubernetes.azure.com/agentpool: main
       containers:
         - name: frontend
           image: runstackregistry.azurecr.io/frontend-prod:latest

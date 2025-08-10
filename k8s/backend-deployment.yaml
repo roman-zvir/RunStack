@@ -12,6 +12,8 @@ spec:
       labels:
         app: backend
     spec:
+      nodeSelector:
+        kubernetes.azure.com/agentpool: main
       containers:
         - name: backend
 
