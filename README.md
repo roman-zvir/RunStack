@@ -1,23 +1,19 @@
 
 <div align="center">
   <h1>🚀 RunStack</h1>
-  <p>A modern full-stack web application template built with React and Flask - Roman Zvir's Pet Project</p>
+  <p>A modern full‑stack web app template (React + Flask) with Docker, CI/CD, and Kubernetes</p>
 
-  [![Live Demo](https://img.shields.io/badge/demo-live-green.svg)](https://runstack.pp.ua/)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white)](https://hub.docker.com/u/romanzvir)
-  [![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/roman-zvir/react-python-playground/actions)
+  <a href="https://runstack.pp.ua/"><img alt="Live Demo" src="https://img.shields.io/badge/demo-live-green.svg"></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg"></a>
+  <a href="https://hub.docker.com/u/romanzvir"><img alt="Docker" src="https://img.shields.io/badge/docker-%230db7ed.svg?style=flat&logo=docker&logoColor=white"></a>
+  <a href="https://github.com/roman-zvir/RunStack/actions"><img alt="CI/CD" src="https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white"></a>
 
-  [Live Demo](https://runstack.pp.ua/) • [API Docs](https://runstack.pp.ua/api/products) • [Report Bug](https://github.com/roman-zvir/react-python-playground/issues) • [Request Feature](https://github.com/roman-zvir/react-python-playground/issues)
+  <a href="https://runstack.pp.ua/">Live Demo</a> • <a href="https://runstack.pp.ua/api/products">API</a> • <a href="https://github.com/roman-zvir/RunStack/issues">Issues</a>
 </div>
 
 
 
-## 🖥️ Application Screenshots
-
-This section showcases the main interface and product management functionality of the application.
-
-
+## 🖥️ Screenshots
 
 ### 📌 Main Page
 
@@ -25,17 +21,17 @@ This section showcases the main interface and product management functionality o
   <img src="https://github.com/user-attachments/assets/6850b394-e7e5-463d-b6cd-6aefdbdf79a4" alt="Main Page" width="80%" />
 </div>
 
-The main page displays a list of available products in a clean and user-friendly layout. It allows users to easily browse and interact with the application.
+Browse products in a clean, responsive UI.
 
 ---
 
-### ✏️ Adding or Editing a Product
+### ✏️ Add/Edit Product
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/4e31bc77-567d-4c1e-8159-298960b49dd9" alt="Adding or Editing Product" width="80%" />
+  <img src="https://github.com/user-attachments/assets/4e31bc77-567d-4c1e-8159-298960b49dd9" alt="Add or Edit Product" width="80%" />
 </div>
 
-This form allows users to add new products or update existing ones, including fields like title, price, description, and image. It's designed for simplicity and efficiency.
+Create and update products with simple validation.
 
 
 
@@ -45,12 +41,12 @@ This form allows users to add new products or update existing ones, including fi
 
 
 
-RunStack is a production-ready full-stack web application that demonstrates modern development practices including containerization, CI/CD pipelines, and cloud deployment. Built with a React frontend and Flask backend, it showcases a complete development workflow from local development to production deployment on a custom domain, now running on Microsoft Azure.
+RunStack is a production‑ready full‑stack template showing modern dev practices: containerization, CI/CD, and cloud deployment. It uses a React frontend and a Flask REST API backend, deploys to Microsoft Azure AKS, and serves a custom domain with HTTPS.
 
 
 ### ✨ Key Highlights
 
-- **🔄 Full-Stack**: React frontend with Flask REST API backend
+- **🔄 Full‑Stack**: React frontend with Flask REST API backend
 - **🐳 Containerized**: Docker-ready for any environment
 - **☁️ Cloud Native**: Deployed on Microsoft Azure with Azure Kubernetes Service (AKS)
 - **🌐 Custom Domain**: Available at https://runstack.pp.ua/
@@ -62,25 +58,19 @@ RunStack is a production-ready full-stack web application that demonstrates mode
 ## 🛠 Tech Stack
 
 ### Frontend
-- **React 18** - Modern UI library with hooks
-- **React Router 6** - Client-side routing
-- **Axios** - HTTP client for API calls
-- **Bulma** - Modern CSS framework
-- **React Scripts** - Build tooling
+- React 18, React Router 6
+- Axios for API calls
+- Bulma CSS
+- Create React App build tooling
 
 ### Backend
-- **Flask 2.2** - Lightweight Python web framework
-- **Flask-RESTful** - REST API extension
-- **Flask-CORS** - Cross-origin resource sharing
-- **Peewee ORM** - Database management
-- **SQLite** - Local database
+- Flask 2.2 + Flask‑RESTful, Flask‑CORS
+- Peewee ORM, SQLite (local)
 
 ### DevOps & Infrastructure
-- **Docker** - Containerization
-- **Kubernetes** - Container orchestration
-- **Microsoft Azure (AKS)** - Cloud hosting
-- **GitHub Actions** - CI/CD pipeline
-- **Docker Hub** - Container registry
+- Docker, Kubernetes (AKS)
+- GitHub Actions CI/CD
+- Azure Container Registry (ACR), Docker Hub
 
 ## ✨ Features
 
@@ -97,79 +87,65 @@ RunStack is a production-ready full-stack web application that demonstrates mode
 ## 🚀 Quick Start
 
 ### Prerequisites
+- Docker (optional)
+- Node.js 18+
+- Python 3.11+
+- Git
 
-Before you begin, ensure you have the following installed:
-
-- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/)
-- [Node.js](https://nodejs.org/) (v16 or higher)
-- [Python](https://www.python.org/) (v3.8 or higher)
-- [Git](https://git-scm.com/)
-
-### Installation
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/roman-zvir/RunStack.git
-   cd RunStack
-   ```
-# Add upstream remote
-git remote add upstream https://github.com/roman-zvir/RunStack.git
-
-# Fork and clone your fork
+### Clone
+```bash
 git clone https://github.com/roman-zvir/RunStack.git
 cd RunStack
+```
 
-# Add upstream remote
-git remote add upstream https://github.com/roman-zvir/RunStack.git
+### Option A: Makefile (recommended)
+```bash
+# One‑time: create virtualenv at repo root for Makefile helpers
+python3 -m venv .venv
 
+# Install deps (backend + frontend)
+make install
 
+# Run dev servers (use 2 terminals)
+make dev-backend   # http://localhost:5000
+make dev-frontend  # http://localhost:3000
+```
 
-2. **Using Docker (Recommended)**
-   ```bash
-   # Build and run containers individually (no docker-compose.yml provided)
-   docker build -t react-app ./frontend
-   docker build -t flask-api ./backend
-   # You can run the containers with:
-   docker run -p 3000:3000 react-app
-   docker run -p 5000:5000 flask-api
-   ```
-   > **Note:** There is no `docker-compose.yml` in this repository. If you want to use Docker Compose, you will need to create your own file.
+### Option B: Manual
+```bash
+# Backend
+cd backend
+python3 -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+python app.py --host 0.0.0.0 --port 5000
+```
 
-3. **Manual Setup**
-   ```bash
-   # Backend setup
-   cd backend
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   python app.py
-   ```
+```bash
+# Frontend (new terminal)
+cd frontend
+npm install
+npm start
+```
 
-   ```bash
-   # Frontend setup (in a new terminal)
-   cd frontend
-   npm install
-   npm start
-   
+### Option C: Docker
+```bash
+# Build images
+make docker-build
 
-   > **Note:** Make sure you have Python 3.8+ and Node.js 16+ installed. The backend runs on port 5000 and the frontend on port 3000 by default.
-   # Frontend setup (new terminal)
-   cd frontend
-   npm install
-   npm start
-   ```
+# Run containers (frontend on :3000, backend on :5000)
+make docker-run
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5000
+# Stop & remove
+make docker-stop
+```
+
+Access:
+- Frontend: http://localhost:3000
+- Backend:  http://localhost:5000
 
 ## 💻 Development
 
-### Project Structure
+### Project structure
 
 
 ```
@@ -190,7 +166,7 @@ RunStack/
 └── 📁 .github/workflows/ # CI/CD pipelines
 ```
 
-### Development Workflow
+### Development workflow
 
 1. **Make your changes** in the appropriate directory
 2. **Test locally** using the development servers
@@ -198,7 +174,7 @@ RunStack/
 4. **Push to your branch** - CI/CD will automatically build and test
 5. **Create a Pull Request** for review
 
-### Available Scripts
+### Available scripts
 
 **Frontend:**
 ```bash
@@ -217,17 +193,17 @@ python test_app.py # Run backend tests
 
 ### Live Application
 
-Your application is **live and running** with a custom domain! 🎉
+Your application is live with a custom domain.
 
 | Service | URL | Status |
 |---------|-----|--------|
 | 🌐 **Frontend** | [https://runstack.pp.ua/](https://runstack.pp.ua/) | ✅ Live |
 | 🔌 **Backend API** | [https://runstack.pp.ua/api/products](https://runstack.pp.ua/api/products) | ✅ Live |
 
-### Deployment Options
+### Deployment options
 
 
-#### 🔵 Microsoft Azure (Current)
+#### 🔵 Microsoft Azure (AKS)
 
 The application is deployed using Azure Kubernetes Service (AKS) with a custom domain configuration. The setup includes:
 
@@ -237,16 +213,14 @@ The application is deployed using Azure Kubernetes Service (AKS) with a custom d
 - **📊 Monitoring**: Azure Monitor and logging enabled
 
 ```bash
-# Check deployment status
-kubectl get pods
-kubectl get services
-kubectl get ingress
-
-# Scale your application
-kubectl scale deployment frontend --replicas=3
-
-# Update deployment
+# Build & push images to ACR (branch‑aware)
 ./deploy.sh
+
+# Check status
+kubectl get pods,svc,ingress
+
+# Scale
+kubectl scale deployment frontend --replicas=3
 ```
 
 For detailed deployment instructions, see the Kubernetes manifests in the `k8s/` directory and refer to Azure AKS documentation for cluster setup and management.
@@ -266,7 +240,7 @@ minikube service frontend --url
 minikube service backend --url
 ```
 
-#### ☁️ Other Cloud Providers
+#### ☁️ Other cloud providers
 
 Deploy the Docker images to:
 - **AWS EKS** - Amazon Elastic Kubernetes Service
@@ -274,7 +248,7 @@ Deploy the Docker images to:
 - **DigitalOcean** - Kubernetes or Droplets
 - **Heroku** - Container deployment
 
-## 📚 API Reference
+## 📚 API reference
 
 ### Base URL
 - **Production**: `https://runstack.pp.ua/api`
@@ -290,7 +264,7 @@ Deploy the Docker images to:
 | `PUT` | `/products/{id}` | Update product |
 | `DELETE` | `/products/{id}` | Delete product |
 
-### Example Requests
+### Example requests
 
 ```bash
 # Get all products
@@ -302,79 +276,65 @@ curl -X POST "https://runstack.pp.ua/api/products" \
   -d '{"name": "New Product", "price": 29.99}'
 ```
 
-## ⚙️ Environment Variables
+## ⚙️ Configuration
 
-### Frontend Configuration
-
-Create a `.env` file in the `frontend` directory:
+### Frontend
+The app supports dynamic runtime config via `public/config.js` (window.APP_CONFIG). You can also set a build‑time env var consumed by the client:
 
 ```env
-# API Base URL - Production
-REACT_APP_BASE_URL=https://runstack.pp.ua/api
-
-# API Base URL - Local development
-# REACT_APP_BASE_URL=http://localhost:5000/api
-
-# Optional: Enable development features
-REACT_APP_DEBUG=false
+# .env in frontend/
+# Correct variable name used by code:
+REACT_APP_API_URL=https://runstack.pp.ua/api
+# Example for local dev:
+# REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-### Backend Configuration
+Note: If you use Kubernetes ingress with the same host, the runtime config will default to `${window.location.origin}/api`, so you often don’t need to set this.
 
-The backend uses environment variables for configuration:
-
+### Backend
 ```env
-# Database
-DATABASE_URL=sqlite:///products.db
-
-# Flask settings
-FLASK_ENV=production
+# Flask
+FLASK_ENV=development|production
 FLASK_DEBUG=false
 
-# CORS settings
+# CORS (optional)
 CORS_ORIGINS=https://runstack.pp.ua,http://localhost:3000
+```
+
+## ✅ Testing & quality
+
+Use the Makefile helpers for a consistent workflow:
+
+```bash
+make test           # Backend + frontend tests
+make test-backend   # PyTest with coverage
+make test-frontend  # CRA tests with coverage
+make lint           # Flake8/Black + ESLint
+make format         # Auto‑format
+make security       # Bandit + Safety (best‑effort)
 ```
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+Contributions are welcome.
+- Fork the repo and create a feature branch
+- Keep PRs focused and add tests when possible
+- Run make lint test before pushing
 
-### How to Contribute
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Development Setup
-
-```bash
-
-# Fork and clone your fork
-git clone https://github.com/roman-zvir/react-python-playground.git
-cd react-python-playground
-
-# Add upstream remote
-git remote add upstream https://github.com/roman-zvir/react-python-playground.git
-
-# Create a new branch
-git checkout -b feature/your-feature-name
-```
+Issues and feature requests: https://github.com/roman-zvir/RunStack/issues
 
 ## 📄 License
 
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License – see the [LICENSE](LICENSE) file.
 
 ## 👨‍💻 Contact & Support
 
-**Roman Zvir** - DevOps Engineer
+Roman Zvir – DevOps Engineer
 
-- 🌐 **Live Project**: [https://roman-zvir-pet-project.pp.ua/](https://roman-zvir-pet-project.pp.ua/)
-- 🐙 **GitHub**: [@roman-zvir](https://github.com/roman-zvir)
-- 📧 **Email**: [zwirr151@gmail.com](mailto:zwirr151@gmail.com)
-- 💼 **LinkedIn**: Connect with me for professional inquiries
+- 🌐 Live: https://runstack.pp.ua/
+- 🐙 GitHub: https://github.com/roman-zvir
+- 📧 Email: zwirr151@gmail.com
 
 
 
