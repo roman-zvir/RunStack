@@ -1,0 +1,32 @@
+# .gitignore for Terraform
+# This file tells Git which Terraform files to ignore
+
+# Terraform state files contain sensitive information and should not be committed
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Terraform variable files may contain secrets
+terraform.tfvars
+*.auto.tfvars
+
+# Terraform plan files may contain sensitive data
+*.tfplan
+
+# Terraform crash log files
+crash.log
+crash.*.log
+
+# Terraform directory cache
+.terraform/
+.terraform.lock.hcl
+
+# Terraform override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Terraform CLI configuration files
+.terraformrc
+terraform.rc

@@ -1,0 +1,25 @@
+# terraform.tfvars.example - Example configuration file
+# Copy this file to terraform.tfvars and customize the values for your environment
+# The terraform.tfvars file should NOT be committed to version control
+
+# Basic Configuration
+resource_group_name = "rg-runstack-dev"
+location           = "France Central"
+environment        = "dev"
+
+# Container Registry
+# Note: ACR names must be globally unique across all of Azure
+acr_name = "runstackregistrydev123"  # Change this to something unique
+
+# Kubernetes Cluster
+aks_cluster_name = "aks-runstack-dev"
+node_count      = 2
+vm_size         = "Standard_DS2_v2"
+
+# For production, you might want:
+# resource_group_name = "rg-runstack-prod"
+# environment        = "prod"
+# acr_name          = "runstackregistryprod123"
+# aks_cluster_name  = "aks-runstack-prod"
+# node_count        = 3
+# vm_size           = "Standard_DS3_v2"
