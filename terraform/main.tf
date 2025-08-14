@@ -66,6 +66,10 @@ resource "azurerm_kubernetes_cluster" "runstack" {
     type = "SystemAssigned"
   }
 
+  # Enable OIDC issuer and workload identity (matching your existing cluster)
+  oidc_issuer_enabled       = true
+  workload_identity_enabled = true
+
   tags = {
     Environment = var.environment
     Project     = "RunStack"
