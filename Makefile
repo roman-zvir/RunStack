@@ -167,3 +167,31 @@ setup: install build test ## Complete setup for new developers
 	@echo "   make dev-frontend # Start frontend"
 	@echo "   make test         # Run tests"
 	@echo "   make help         # See all commands"
+
+# Terraform Infrastructure Management
+terraform-init: ## Initialize Terraform in the terraform directory
+	@echo "🏗️ Initializing Terraform..."
+	cd terraform && terraform init
+
+terraform-plan: ## Show Terraform deployment plan
+	@echo "📋 Planning Terraform deployment..."
+	cd terraform && terraform plan
+
+terraform-apply: ## Deploy infrastructure with Terraform
+	@echo "🚀 Deploying infrastructure..."
+	cd terraform && terraform apply
+
+terraform-destroy: ## Destroy all Terraform-managed resources
+	@echo "💥 Destroying infrastructure..."
+	cd terraform && terraform destroy
+
+terraform-setup: ## Complete Terraform setup (copy config file)
+	@echo "⚙️ Setting up Terraform configuration..."
+	cd terraform && cp terraform.tfvars.example terraform.tfvars
+	@echo "✅ Configuration file created! Edit terraform/terraform.tfvars before deploying."
+	@echo "   Remember to change the acr_name to something unique!"
+
+terraform-status: ## Show current Terraform state
+	@echo "📊 Terraform Status"
+	@echo "=================="
+	cd terraform && terraform show || echo "❌ No Terraform state found. Run 'make terraform-apply' first."

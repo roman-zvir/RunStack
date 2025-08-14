@@ -71,6 +71,7 @@ RunStack is a production‑ready full‑stack template showing modern dev practi
 - Docker, Kubernetes (AKS)
 - GitHub Actions CI/CD
 - Azure Container Registry (ACR), Docker Hub
+- Terraform (Infrastructure as Code)
 
 ## ✨ Features
 
@@ -163,6 +164,7 @@ RunStack/
 │   ├── 📄 Dockerfile     # Backend container
 │   └── 📄 requirements.txt
 ├── 📁 k8s/               # Kubernetes manifests
+├── 📁 terraform/         # Infrastructure as Code
 └── 📁 .github/workflows/ # CI/CD pipelines
 ```
 
@@ -224,6 +226,44 @@ kubectl scale deployment frontend --replicas=3
 ```
 
 For detailed deployment instructions, see the Kubernetes manifests in the `k8s/` directory and refer to Azure AKS documentation for cluster setup and management.
+
+#### 🏗️ Infrastructure as Code with Terraform
+
+**New!** You can now manage your Azure infrastructure using Terraform instead of manual Azure portal configuration:
+
+**Quick Start (Recommended for beginners):**
+```bash
+./terraform-quickstart.sh
+```
+
+**Manual Setup:**
+```bash
+# Navigate to Terraform directory
+cd terraform
+
+# Copy and customize configuration
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your preferences
+
+# Initialize and deploy infrastructure  
+terraform init
+terraform plan
+terraform apply
+
+# Get cluster credentials
+az aks get-credentials --resource-group $(terraform output -raw resource_group_name) --name $(terraform output -raw aks_cluster_name)
+
+# Deploy your application
+kubectl apply -f ../k8s/
+```
+
+The Terraform configuration creates:
+- 📦 **Resource Group** - Container for all resources
+- 🐳 **Azure Container Registry** - Docker image storage
+- ☸️ **AKS Cluster** - Kubernetes cluster
+- 🔐 **Role Assignments** - Proper permissions
+
+For complete Terraform setup instructions, see [`terraform/README.md`](terraform/README.md).
 
 #### 🐳 Local with Minikube
 
